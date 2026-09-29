@@ -1,0 +1,12 @@
+{
+  "name": "peskas",
+  "description": "Claude Code setup shared by the Peskas repos",
+  "owner": { "name": "WorldFish", "url": "https://github.com/WorldFishCenter" },
+  "plugins": [
+    {
+      "name": "peskas",
+      "source": "./plugin",
+      "description": "Peskas working rules, ecosystem context, /peskas:check and the peskas:scout agent"
+    }
+  ]
+}

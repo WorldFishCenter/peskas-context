@@ -1,0 +1,6 @@
+{
+  "name": "peskas",
+  "description": "Shared Claude Code setup for the Peskas repos: working rules, ecosystem context, /peskas:check and the peskas:scout agent.",
+  "author": { "name": "WorldFish Peskas team", "url": "https://github.com/WorldFishCenter" },
+  "repository": "https://github.com/WorldFishCenter/peskas-context"
+}

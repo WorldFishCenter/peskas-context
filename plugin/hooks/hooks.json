@@ -1,0 +1,24 @@
+{
+  "description": "Loads the Peskas context into every session and subagent",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart \"${CLAUDE_PLUGIN_ROOT}/context/rules.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart \"${CLAUDE_PLUGIN_ROOT}/context/ecosystem.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart --r-only \"${CLAUDE_PLUGIN_ROOT}/context/r-pipelines.md\"" }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart \"${CLAUDE_PLUGIN_ROOT}/context/rules.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart \"${CLAUDE_PLUGIN_ROOT}/context/ecosystem.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart --r-only \"${CLAUDE_PLUGIN_ROOT}/context/r-pipelines.md\"" }
+        ]
+      }
+    ]
+  }
+}
