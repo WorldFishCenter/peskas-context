@@ -13,7 +13,7 @@ Active:
 | `peskas.coasts` (pkg `coasts`) | **Shared hub**: storage/Mongo/KoBo/Airtable helpers, PDS ingestion, WIO regional portal data, tracks-app data | R package |
 | `peskas.kenya.data.pipeline` | Kenya: WCS catch + price surveys, KEFS surveys | R package |
 | `peskas.zanzibar.data.pipeline` | Zanzibar: WCS, WF, BA, gleaning surveys | R package |
-| `peskas.mozambique.data.pipeline` | Mozambique: ADNAP and Lurio form chains | R package |
+| `peskas.mozambique.data.pipeline` | Mozambique: DINAPA and Lurio form chains (DINAPA's chain is still named `adnap` in code) | R package |
 | `peskas.timor.data.pipeline` | Timor-Leste: KoBo landings + PDS, public data, Dataverse | R package |
 | `peskas-api` | Serves validated/raw trips parquet from GCS | Python FastAPI + DuckDB, Cloud Run |
 | `peskas-validation` | Management/validation portal (repo remote: `peskas.zanzibar.validation`) | React/Vite + Express, Vercel |
@@ -62,7 +62,8 @@ Each is a producer/consumer pair across repos. Changing one side means changing 
 
 - **PDS**: Pelagic Data Systems, solar GPS trackers on boats; the source of tracks and trips.
 - **KoBo**: KoboToolbox, the survey platform enumerators use to record landings.
-- **WCS / WF / BA / ADNAP / Lurio / KEFS**: survey programmes or partners, each with its own KoBo form chain.
+- **WCS / WF / BA / DINAPA / Lurio / KEFS**: survey programmes or partners, each with its own KoBo form chain.
+- **DINAPA**: National Directorate of Fisheries and Aquaculture, Mozambique's fisheries authority; it replaced ADNAP. It has no website or logo yet. Code identifiers (`*_adnap()` functions, `adnap` config keys, `wf-adnap-*` GCS prefixes, `KOBO_ASSET_ID_ADNAP`) keep the old name; published values and user-facing text say DINAPA.
 - **Landing / trip**: one boat's fishing trip as recorded at the landing site; the core row across pipelines.
 - **Enumerator**: the person recording landings; validation scores them in `enumerators_stats`.
 - **GAUL**: FAO administrative boundaries used for regional aggregation (`wio_gaul1/2`).
