@@ -22,6 +22,7 @@ Active:
 | `coasts` | WIO regional portal (coasts.peskas.org). Not the R package `peskas.coasts`, which produces its data | React/Vite, Vercel, no backend |
 | `tracks-explorer` | Fisher-facing tracks app | React/Vite + Capacitor, Vercel |
 | `peskas.kenya.bmu.dashboard` | Kenya WCS BMU dashboard with role-based access (WCS + WorldFish) | Next.js + tRPC |
+| `peskas.show` | Public website (peskas.org): about Peskas, blog stories, links to every portal (`content/global/regions.json`); reads no Peskas data | Next.js + TinaCMS, Vercel |
 
 Public names (READMEs, docs, UI copy): Peskas Zanzibar / Kenya / Mozambique (country dashboards), Peskas Timor-Leste, Peskas Coasts, Peskas Tracks, Peskas Kenya BMU dashboard, Peskas Management Platform, Peskas Fishery Data API; pipelines are "Peskas <Country> data pipeline". Spell Peskas, WorldFish, Timor-Leste, KoboToolbox. Public contact: peskas.platform@gmail.com.
 
