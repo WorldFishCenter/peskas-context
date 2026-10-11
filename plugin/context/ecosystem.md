@@ -42,7 +42,7 @@ peskas.coasts ─► Mongo portal + GCS peskas-coasts ─► daily JSON commit t
 Timor only ─► GCS public-timor ─► peskas.timor.portal.v2
 Timor only ─► peskas-api-* bucket + peskas-api /metadata ─► Harvard Dataverse (monthly, one versioned dataset)
 Kenya only ─► Mongo app[-dev] ─► peskas.kenya.bmu.dashboard
-peskas.coasts ─► Airtable frame collection_stats (daily counts per country and district)
+peskas.coasts ─► Airtable frame collection_stats (weekly counts per country and district)
 ```
 
 Timor on the coasts portal (`export_portal`) is separate from `peskas.timor.portal.v2` (`public-timor`); changing one does not update the other.
