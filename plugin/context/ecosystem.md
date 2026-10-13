@@ -15,7 +15,7 @@ Active:
 | `peskas.zanzibar.data.pipeline` | Zanzibar: WCS, WF, BA, gleaning surveys | R package |
 | `peskas.mozambique.data.pipeline` | Mozambique: DINAPA and Lurio form chains (DINAPA's chain is still named `adnap` in code) | R package |
 | `peskas.timor.data.pipeline` | Timor-Leste: KoBo landings + PDS, public data, Dataverse | R package |
-| `peskas-api` | Serves validated/raw trips parquet from GCS | Python FastAPI + DuckDB, Cloud Run |
+| `peskas-api` | Serves the countries' landings (validated/raw trips) and district-months parquet from GCS | Python FastAPI + DuckDB, Cloud Run |
 | `peskas-validation` | Management/validation portal (repo remote: `peskas.zanzibar.validation`) | React/Vite + Express, Vercel |
 | `peskas.dashboard` | Multi-country portal, one Vercel project per `VITE_COUNTRY_CODE` (TZ/KE/MZ) | React/Vite + tRPC on Nitro, Turborepo, Vercel |
 | `peskas.timor.portal.v2` | Timor portal | React/Vite, Vercel |
@@ -72,6 +72,6 @@ Each is a producer/consumer pair across repos. Changing one side means changing 
 - **WCS / WF / BA / DINAPA / Lurio / KEFS**: survey programmes or partners, each with its own KoBo form chain.
 - **DINAPA**: National Directorate of Fisheries and Aquaculture, Mozambique's fisheries authority; it replaced ADNAP. It has no website or logo yet. Code identifiers (`*_adnap()` functions, `adnap` config keys, `wf-adnap-*` GCS prefixes, `KOBO_ASSET_ID_ADNAP`) keep the old name; published values and user-facing text say DINAPA.
 - **Landing / trip**: one boat's fishing trip as recorded at the landing site; the core row across pipelines.
-- **GPS tracker method / FAO ARTFISH method**: the two ways catch and revenue are raised to the whole fleet. The first multiplies census boats by trips per GPS-tracked boat and catch per trip, each boat and gear group counting for its share of the census boats (`estimated_*` metrics); the second is FAO's ARTFISH: census boats × days fished, as fishers report them × catch per trip, by boat group and gear group (boat type alone in Mozambique) (`estimated_*_fao`). The dashboard shows both, adding up only the district-months both estimate.
+- **GPS tracker method / FAO ARTFISH method**: the two ways catch and revenue are raised to the whole fleet. The first multiplies census boats by trips per GPS-tracked boat and catch per trip, each boat and gear group counting for its share of the census boats (`estimated_*` metrics); the second is FAO's ARTFISH: census boats × days fished, as fishers report them × catch per trip, by boat group and gear group (boat type alone in Mozambique) (`estimated_*_fao`). ARTFISH also splits each group's catch by the species mix of the trips behind its catch per trip; where a trip's species rows are a sample (Kenya's KEFS), that mix is applied to the trip's total. The dashboard shows both, adding up only the district-months both estimate.
 - **Enumerator**: the person recording landings; validation scores them in `enumerators_stats`.
 - **GAUL**: FAO administrative boundaries used for regional aggregation (`wio_gaul1/2`).
