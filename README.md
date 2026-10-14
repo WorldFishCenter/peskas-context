@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="brand/svg/peskas-logo-dark.svg">
+  <img src="brand/svg/peskas-logo.svg" alt="Peskas" height="48">
+</picture>
+
 # peskas-context
 
 The shared [Claude Code](https://code.claude.com) setup for the Peskas repos. With it, Claude follows the same Peskas rules and knows how the repos fit together, for everyone and in every Peskas repo.
@@ -44,6 +49,8 @@ Edit the files below and push to `main`. Everyone with automatic updates gets th
 | `plugin/agents/scout.md` | `peskas:scout` |
 | `plugin/hooks/hooks.json`, `plugin/scripts/context.sh` | Load the context files into each session |
 | `audit/monthly.md` | Instructions for the monthly read-only audit, which runs as a Claude Code routine |
+| `news/monthly.md`, `news/template.html` | Instructions and page design for the monthly News & Updates bulletin, which runs as a Claude Code routine and publishes a private Artifact for review; `news/editions/` keeps finished editions |
+| `brand/` | The official Peskas logo: its files, colours and how to use them (`brand/README.md`); `brand/sync.py` copies it into the repos |
 
 Before pushing, run `claude plugin validate .` and keep each file in `plugin/context/` under 10,000 characters; Claude Code cuts longer ones to a preview. Keep the name `peskas` in `.claude-plugin/marketplace.json` and `plugin/.claude-plugin/plugin.json` unchanged: every install depends on it.
 

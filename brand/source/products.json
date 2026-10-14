@@ -1,0 +1,62 @@
+{
+ "cards": [
+  {
+   "file": "peskas",
+   "name": null,
+   "line": "Open-source digital platform for <b>small-scale fisheries</b>"
+  },
+  {
+   "file": "zanzibar",
+   "name": "Zanzibar",
+   "line": "Small-scale fisheries dashboard",
+   "flag": "zanzibar"
+  },
+  {
+   "file": "kenya",
+   "name": "Kenya",
+   "line": "Small-scale fisheries dashboard",
+   "flag": "kenya"
+  },
+  {
+   "file": "mozambique",
+   "name": "Mozambique",
+   "line": "Small-scale fisheries dashboard",
+   "flag": "mozambique"
+  },
+  {
+   "file": "timor-leste",
+   "name": "Timor-Leste",
+   "line": "Small-scale fisheries data",
+   "flag": "timor-leste"
+  },
+  {
+   "file": "coasts",
+   "name": "Coasts",
+   "line": "Comparing small-scale fisheries across countries"
+  },
+  {
+   "file": "tracks",
+   "name": "Tracks",
+   "line": "Trips, catch and fishing grounds, for fishers"
+  },
+  {
+   "file": "management-platform",
+   "name": "Management Platform",
+   "line": "Check, follow and download fisheries data"
+  },
+  {
+   "file": "kenya-bmu",
+   "name": "Kenya BMU",
+   "line": "Catch and earnings for fishers and BMUs",
+   "flag": "kenya"
+  }
+ ],
+ "hexes": [
+  "coasts",
+  "kenya",
+  "zanzibar",
+  "mozambique",
+  "timor-leste"
+ ],
+ "hex_caption": "data pipeline"
+}

@@ -1,0 +1,299 @@
+<!-- Peskas News & Updates template. Fill only the SLOT parts; keep the style, icons, logo, data-flow map, footer and script as they are. See news/monthly.md. -->
+<title>Peskas News &amp; Updates, MONTH YEAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a monthly bulletin. Masthead, then the five steps of the Peskas data flow as the month's map, then each update hung off the steps it touches. */
+:root {
+  --bg: #f5f9f9;
+  --surface: #ffffff;
+  --tint: #e6f0f1;
+  --ink: #0b2233;
+  --muted: #4a6573;
+  --line: #d3e2e4;
+  --teal: #006d77;
+  --on-teal: #ffffff;
+  --coral: #d96c50;
+  --peskas-1: #a9d1d4;
+  --peskas-2: #5aa8af;
+  --peskas-3: #006d77;
+  --peskas-4: #0b2233;
+  --peskas-eye: #d96c50;
+  --f-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b2233; --surface: #10293b; --tint: #143347; --ink: #e8f1f2; --muted: #9fb8bf;
+    --line: #25445a; --teal: #8ccbd0; --on-teal: #0b2233; --coral: #e69f8d;
+    --peskas-1: #3a6c77; --peskas-2: #3f8a93; --peskas-3: #8ccbd0; --peskas-4: #ffffff; --peskas-eye: #e69f8d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b2233; --surface: #10293b; --tint: #143347; --ink: #e8f1f2; --muted: #9fb8bf;
+  --line: #25445a; --teal: #8ccbd0; --on-teal: #0b2233; --coral: #e69f8d;
+  --peskas-1: #3a6c77; --peskas-2: #3f8a93; --peskas-3: #8ccbd0; --peskas-4: #ffffff; --peskas-eye: #e69f8d;
+  color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); -webkit-font-smoothing: antialiased; }
+a { color: var(--teal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 2px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); padding-block: 28px 72px; display: grid; gap: 56px; }
+
+.label { font: 600 0.78rem/1.3 var(--f-display); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.ico { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Masthead */
+.topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.brand { display: block; line-height: 0; }
+.logo { height: 30px; width: auto; }
+.issue { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.issue span:last-child { color: var(--ink); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-top: 44px; }
+h1 { font: 600 clamp(2.1rem, 4.6vw, 3.25rem)/1.08 var(--f-display); letter-spacing: -0.025em; margin: 0 0 22px; text-wrap: balance; }
+.standfirst { font-size: 1.25rem; line-height: 1.55; max-width: 58ch; margin: 0; }
+.mark { display: block; width: 100%; max-width: 300px; height: auto; margin-inline: auto; }
+
+/* The data flow */
+.flow { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px clamp(16px, 3vw, 32px) 30px; display: grid; gap: 24px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; position: relative; }
+.steps::before { content: ""; position: absolute; top: 30px; left: 10%; right: 10%; height: 2px; background: var(--line); }
+.step { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; min-width: 0; }
+.node { width: 52px; height: 60px; position: relative; z-index: 1; flex: none; }
+.node polygon { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.node .ico { color: var(--muted); }
+.step.is-active .node polygon { fill: var(--teal); stroke: var(--teal); }
+.step.is-active .node .ico { color: var(--on-teal); }
+.step h3 { font: 600 1rem/1.2 var(--f-display); margin: 0 0 4px; }
+.step p { font-size: 0.92rem; line-height: 1.45; color: var(--muted); margin: 0; }
+.step .count { margin-top: 8px; font: 600 0.75rem/1.3 var(--f-display); letter-spacing: 0.03em; }
+.step.is-active .count { color: var(--teal); }
+
+/* Stories */
+.stories { display: grid; }
+.story { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px 40px; padding-block: 40px; border-top: 1px solid var(--line); }
+.story--lead { grid-template-columns: 180px minmax(0, 1fr) 230px; border-top: 0; padding-top: 8px; }
+.meta { display: flex; flex-direction: column; gap: 14px; }
+.stages, .chips { list-style: none; margin: 0; padding: 0; display: flex; }
+.stages { flex-direction: column; gap: 6px; }
+.stages li { display: flex; align-items: center; gap: 8px; font: 600 0.82rem/1.2 var(--f-display); color: var(--teal); }
+.chips { flex-wrap: wrap; gap: 6px; }
+.chips li { font: 500 0.74rem/1.2 var(--f-display); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.story h2 { font: 600 1.6rem/1.2 var(--f-display); letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; }
+.story--lead h2 { font-size: clamp(1.7rem, 3vw, 2.1rem); }
+.body { min-width: 0; }
+.body p { font-size: 1.07rem; line-height: 1.65; margin: 0 0 14px; max-width: 64ch; }
+.body .see { font: 500 0.88rem/1.5 var(--f-display); color: var(--muted); margin-top: 18px; }
+.numbers { background: var(--tint); border-radius: 12px; padding: 20px; align-self: start; display: grid; gap: 16px; }
+.numbers dl { margin: 0; display: grid; gap: 16px; }
+.numbers dt { font: 600 2rem/1 var(--f-display); color: var(--teal); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.numbers dd { margin: 6px 0 0; font-size: 0.92rem; line-height: 1.4; }
+
+/* Also this month */
+.section-h { font: 600 1.4rem/1.25 var(--f-display); letter-spacing: -0.01em; margin: 0 0 20px; display: flex; align-items: center; gap: 12px; }
+.also-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; min-width: 0; }
+.item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.item h3 { display: flex; align-items: center; gap: 10px; font: 600 1rem/1.3 var(--f-display); margin: 0 0 8px; }
+.item h3 .ico { color: var(--teal); }
+.item p { font-size: 1rem; line-height: 1.6; margin: 0; }
+
+/* Figures that changed: the coral cell, like the eye in the logo, marks what to look at */
+.eye { width: 16px; height: 18px; flex: none; }
+.eye path { fill: var(--coral); }
+.intro { font-size: 1.04rem; line-height: 1.6; color: var(--muted); max-width: 64ch; margin: -8px 0 12px; }
+.changes { margin: 0; }
+.change { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 6px 40px; padding-block: 16px; border-top: 1px solid var(--line); }
+.change dt { font: 600 0.92rem/1.5 var(--f-display); }
+.change dd { margin: 0; font-size: 1.04rem; line-height: 1.6; max-width: 68ch; min-width: 0; }
+
+.next { background: var(--tint); border-radius: 12px; padding: 22px clamp(16px, 3vw, 28px); display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 8px 40px; align-items: baseline; }
+.next p { margin: 0; font-size: 1.04rem; line-height: 1.6; max-width: 68ch; }
+
+/* Footer */
+.foot { border-top: 1px solid var(--line); padding-top: 32px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px 48px; }
+.foot section { display: grid; gap: 10px; align-content: start; }
+.foot p { margin: 0; font-size: 0.98rem; line-height: 1.6; color: var(--muted); max-width: 62ch; }
+.links { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font: 500 0.9rem/1.4 var(--f-display); }
+.email { user-select: all; color: var(--ink); font-family: var(--f-display); font-size: 0.9rem; }
+
+@media (max-width: 900px) {
+  .story--lead { grid-template-columns: 180px minmax(0, 1fr); }
+  .numbers { grid-column: 2; }
+}
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; gap: 20px; padding-top: 28px; }
+  .hero-art { display: none; }
+  .steps { grid-template-columns: 1fr; gap: 16px; }
+  .steps::before { top: 30px; bottom: 30px; left: 25px; right: auto; width: 2px; height: auto; }
+  .step { flex-direction: row; align-items: flex-start; text-align: left; gap: 16px; }
+  .story, .story--lead, .change, .next, .foot { grid-template-columns: 1fr; }
+  .numbers { grid-column: auto; }
+  .meta { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+  .stages { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .also-grid { grid-template-columns: 1fr; }
+  .numbers dl { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+</style>
+
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-collect" viewBox="0 0 24 24"><rect x="5.5" y="4.5" width="13" height="16" rx="2"/><path d="M9.5 3.2h5v3h-5zM8.5 11h7M8.5 14.5h7M8.5 18h4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M12 3.2l7 2.8v5.2c0 4.3-2.9 7.7-7 9.6-4.1-1.9-7-5.3-7-9.6V6zM8.6 12.2l2.4 2.4 4.6-4.8"/></symbol>
+  <symbol id="i-estimate" viewBox="0 0 24 24"><path d="M3.5 20.5h17M7 20.5v-5M11 20.5v-8.5M15 20.5v-6M19 20.5V8.5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 10.9l7.6-3.8M8.2 13.1l7.6 3.8"/></symbol>
+  <symbol id="i-show" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12.5" rx="1.8"/><path d="M8.5 20.5h7M12 17v3.5M6.5 13.5l3-3 2.5 2 5-4.5"/></symbol>
+</svg>
+
+<div class="wrap">
+
+<header>
+  <div class="topbar">
+    <a class="brand" href="https://peskas.org"><svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0.42 5.17 433.81 77.83" role="img" aria-label="Peskas"><g transform="matrix(1.91781 0 0 1.91781 0.959 -21.370)"><path style="fill:var(--peskas-1)" d="M20 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM16 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM16 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM8 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM8 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM4 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM4 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-2)" d="M28 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM36 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM32 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM32 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-3)" d="M44 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM40 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM48 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM40 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM48 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM56 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM44 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM44 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-4)" d="M60 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM68 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM64 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM64 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM60 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM60 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-eye)" d="M56 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/></g><path style="fill:var(--peskas-4)" d="M168.32 83V23.56H177.12V42.28L175.76 42.2Q176.08 35.56 178.52 31.08Q180.96 26.6 185.04 24.4Q189.12 22.2 194.16 22.2Q198.8 22.2 202.52 23.88Q206.24 25.56 208.92 28.6Q211.6 31.64 213.04 35.68Q214.48 39.72 214.48 44.36V46.04Q214.48 50.76 213.08 54.8Q211.68 58.84 209 61.92Q206.32 65 202.56 66.72Q198.8 68.44 194.16 68.44Q189.28 68.44 185.24 66.4Q181.2 64.36 178.72 60.08Q176.24 55.8 175.92 49L179.44 54.36V83ZM191.36 59.08Q194.96 59.08 197.64 57.32Q200.32 55.56 201.84 52.4Q203.36 49.24 203.36 45.24Q203.36 41.08 201.84 38.04Q200.32 35 197.64 33.28Q194.96 31.56 191.36 31.56Q188.08 31.56 185.32 33Q182.56 34.44 180.84 37.24Q179.12 40.04 179.12 43.96V47.16Q179.12 50.92 180.88 53.56Q182.64 56.2 185.44 57.64Q188.24 59.08 191.36 59.08ZM240.88 68.52Q235.28 68.52 231.08 66.6Q226.88 64.68 224.12 61.44Q221.36 58.2 219.96 54.2Q218.56 50.2 218.56 46.04V44.52Q218.56 40.2 219.96 36.16Q221.36 32.12 224.12 28.96Q226.88 25.8 230.96 23.92Q235.04 22.04 240.4 22.04Q247.44 22.04 252.2 25.12Q256.96 28.2 259.36 33.2Q261.76 38.2 261.76 43.96V47.96H223.28V41.16H254.8L251.36 44.52Q251.36 40.36 250.16 37.4Q248.96 34.44 246.52 32.84Q244.08 31.24 240.4 31.24Q236.72 31.24 234.16 32.92Q231.6 34.6 230.28 37.76Q228.96 40.92 228.96 45.32Q228.96 49.4 230.24 52.56Q231.52 55.72 234.16 57.52Q236.8 59.32 240.88 59.32Q244.96 59.32 247.52 57.68Q250.08 56.04 250.8 53.64H261.04Q260.08 58.12 257.36 61.48Q254.64 64.84 250.44 66.68Q246.24 68.52 240.88 68.52ZM283.99 68.36Q275.03 68.36 269.95 64.56Q264.87 60.76 264.63 54.04H274.63Q274.87 56.28 277.11 58.12Q279.35 59.96 284.15 59.96Q288.15 59.96 290.51 58.52Q292.87 57.08 292.87 54.6Q292.87 52.44 291.07 51.16Q289.27 49.88 284.95 49.48L281.11 49.08Q273.83 48.28 269.91 44.92Q265.99 41.56 265.99 35.96Q265.99 31.48 268.23 28.44Q270.47 25.4 274.43 23.84Q278.39 22.28 283.51 22.28Q291.51 22.28 296.47 25.8Q301.43 29.32 301.67 36.12H291.67Q291.51 33.88 289.43 32.28Q287.35 30.68 283.43 30.68Q279.91 30.68 277.99 32.04Q276.07 33.4 276.07 35.56Q276.07 37.64 277.63 38.76Q279.19 39.88 282.71 40.28L286.55 40.68Q294.23 41.48 298.59 44.92Q302.95 48.36 302.95 54.2Q302.95 58.52 300.59 61.68Q298.23 64.84 293.99 66.6Q289.75 68.36 283.99 68.36ZM339.76 67 325.2 46.68H318.72L337.2 23.56H348.8L331.76 44.92L332 39.32L352.32 67ZM309.36 67V8.6H320.48V67ZM381.59 67V54.12H379.75V39.8Q379.75 36.04 377.91 34.2Q376.07 32.36 372.23 32.36Q370.23 32.36 367.43 32.44Q364.63 32.52 361.79 32.64Q358.95 32.76 356.71 32.92V23.48Q358.55 23.32 360.87 23.16Q363.19 23 365.63 22.96Q368.07 22.92 370.23 22.92Q376.95 22.92 381.39 24.68Q385.83 26.44 388.11 30.2Q390.39 33.96 390.39 40.04V67ZM367.59 68.12Q362.87 68.12 359.31 66.44Q355.75 64.76 353.79 61.64Q351.83 58.52 351.83 54.12Q351.83 49.32 354.19 46.28Q356.55 43.24 360.83 41.72Q365.11 40.2 370.87 40.2H380.95V46.84H370.71Q366.87 46.84 364.83 48.72Q362.79 50.6 362.79 53.56Q362.79 56.52 364.83 58.36Q366.87 60.2 370.71 60.2Q373.03 60.2 374.99 59.36Q376.95 58.52 378.27 56.48Q379.59 54.44 379.75 50.92L382.47 54.04Q382.07 58.6 380.27 61.72Q378.47 64.84 375.31 66.48Q372.15 68.12 367.59 68.12ZM415.28 68.36Q406.32 68.36 401.24 64.56Q396.16 60.76 395.92 54.04H405.92Q406.16 56.28 408.4 58.12Q410.64 59.96 415.44 59.96Q419.44 59.96 421.8 58.52Q424.16 57.08 424.16 54.6Q424.16 52.44 422.36 51.16Q420.56 49.88 416.24 49.48L412.4 49.08Q405.12 48.28 401.2 44.92Q397.28 41.56 397.28 35.96Q397.28 31.48 399.52 28.44Q401.76 25.4 405.72 23.84Q409.68 22.28 414.8 22.28Q422.8 22.28 427.76 25.8Q432.72 29.32 432.96 36.12H422.96Q422.8 33.88 420.72 32.28Q418.64 30.68 414.72 30.68Q411.2 30.68 409.28 32.04Q407.36 33.4 407.36 35.56Q407.36 37.64 408.92 38.76Q410.48 39.88 414 40.28L417.84 40.68Q425.52 41.48 429.88 44.92Q434.24 48.36 434.24 54.2Q434.24 58.52 431.88 61.68Q429.52 64.84 425.28 66.6Q421.04 68.36 415.28 68.36Z"/></svg>
+</a>
+    <p class="issue label"><span>News &amp; Updates</span><span>No. N · MONTH YEAR</span></p>
+  </div>
+  <div class="hero">
+    <div>
+      <!-- SLOT headline: the month's main news as a plain statement, under 10 words. Quiet month: "A quiet month for Peskas". -->
+      <h1>HEADLINE</h1>
+      <!-- SLOT standfirst: 60 to 90 words. Open with what Peskas does for its users, then say what the month brought and how it fits that purpose. Quiet month: say plainly that no change reached users this month. -->
+      <p class="standfirst">STANDFIRST</p>
+    </div>
+    <div class="hero-art"><svg class="mark" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="-0.28 13.84 72 36.32"><path style="fill:var(--peskas-1)" d="M20 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM16 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM16 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM8 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM8 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM4 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM4 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM12 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-2)" d="M28 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM36 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM32 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM32 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-3)" d="M44 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM40 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM48 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM40 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM48 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM56 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM44 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM44 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM52 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-4)" d="M60 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM68 27.70l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM64 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM64 34.63l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM60 13.84l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3zM60 41.56l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/><path style="fill:var(--peskas-eye)" d="M56 20.77l3.72 2.15v4.3l-3.72 2.15-3.72-2.15v-4.3z"/></svg>
+</div>
+  </div>
+</header>
+
+<section class="flow" aria-labelledby="flow-h">
+  <h2 id="flow-h" class="label">Where this month's updates sit in Peskas</h2>
+  <ol class="steps">
+    <li class="step" data-step="collect">
+      <svg class="node" viewBox="0 0 52 60" aria-hidden="true"><polygon points="26,1.5 50.5,15.5 50.5,44.5 26,58.5 1.5,44.5 1.5,15.5"/><svg class="ico" x="14" y="18" width="24" height="24"><use href="#i-collect"/></svg></svg>
+      <div><h3>Collect</h3><p>Enumerators record landings at landing sites; censuses and boat trackers add context.</p><p class="count" data-count>&nbsp;</p></div>
+    </li>
+    <li class="step" data-step="check">
+      <svg class="node" viewBox="0 0 52 60" aria-hidden="true"><polygon points="26,1.5 50.5,15.5 50.5,44.5 26,58.5 1.5,44.5 1.5,15.5"/><svg class="ico" x="14" y="18" width="24" height="24"><use href="#i-check"/></svg></svg>
+      <div><h3>Check</h3><p>Automatic checks flag doubtful records and reviewers decide on them.</p><p class="count" data-count>&nbsp;</p></div>
+    </li>
+    <li class="step" data-step="estimate">
+      <svg class="node" viewBox="0 0 52 60" aria-hidden="true"><polygon points="26,1.5 50.5,15.5 50.5,44.5 26,58.5 1.5,44.5 1.5,15.5"/><svg class="ico" x="14" y="18" width="24" height="24"><use href="#i-estimate"/></svg></svg>
+      <div><h3>Estimate</h3><p>Records become catch, value and fishing activity for the whole fleet.</p><p class="count" data-count>&nbsp;</p></div>
+    </li>
+    <li class="step" data-step="share">
+      <svg class="node" viewBox="0 0 52 60" aria-hidden="true"><polygon points="26,1.5 50.5,15.5 50.5,44.5 26,58.5 1.5,44.5 1.5,15.5"/><svg class="ico" x="14" y="18" width="24" height="24"><use href="#i-share"/></svg></svg>
+      <div><h3>Share</h3><p>The data goes to partners and users through the Fishery Data API and open datasets.</p><p class="count" data-count>&nbsp;</p></div>
+    </li>
+    <li class="step" data-step="show">
+      <svg class="node" viewBox="0 0 52 60" aria-hidden="true"><polygon points="26,1.5 50.5,15.5 50.5,44.5 26,58.5 1.5,44.5 1.5,15.5"/><svg class="ico" x="14" y="18" width="24" height="24"><use href="#i-show"/></svg></svg>
+      <div><h3>Show</h3><p>Dashboards, the regional portal and apps put the figures in front of people.</p><p class="count" data-count>&nbsp;</p></div>
+    </li>
+  </ol>
+</section>
+
+<main class="stories">
+<!-- SLOT stories: 2 to 4 articles, most important first; the first one has class "story story--lead". Quiet month: delete the whole <main> element.
+     data-stages: the data-flow steps the story touches, from: collect check estimate share show. The map and the step labels are built from it.
+     chips: the countries the story concerns, or the product name for a regional change.
+     .see: only links to a public Peskas platform where the reader can see the change (dashboards, Peskas Coasts, Peskas Timor-Leste). Omit when there is none.
+     .numbers: lead story only, and only when 2 or 3 figures from the release notes are the point; otherwise delete the <aside>. -->
+
+  <article class="story story--lead" data-stages="STEP STEP">
+    <div class="meta">
+      <ul class="stages" data-stage-tags></ul>
+      <ul class="chips"><li>COUNTRY</li></ul>
+    </div>
+    <div class="body">
+      <h2>LEAD STORY HEADING</h2>
+      <p>PARAGRAPH</p>
+      <p class="see">See it on <a href="https://PLATFORM">PLATFORM</a></p>
+    </div>
+    <aside class="numbers" aria-label="In numbers">
+      <p class="label">In numbers</p>
+      <dl>
+        <div><dt>FIGURE</dt><dd>WHAT IT COUNTS</dd></div>
+      </dl>
+    </aside>
+  </article>
+
+  <article class="story" data-stages="STEP">
+    <div class="meta">
+      <ul class="stages" data-stage-tags></ul>
+      <ul class="chips"><li>COUNTRY</li></ul>
+    </div>
+    <div class="body">
+      <h2>STORY HEADING</h2>
+      <p>PARAGRAPH</p>
+    </div>
+  </article>
+
+</main>
+
+<section aria-labelledby="also-h">
+  <h2 id="also-h" class="section-h">Also this month</h2>
+  <!-- SLOT also: smaller user-facing changes, one or two sentences each, title = product or topic. Delete the whole section when there are none. Quiet month: put the few small changes here if any. -->
+  <div class="also-grid">
+    <article class="item" data-stages="STEP">
+      <h3><svg class="ico" aria-hidden="true" data-stage-icon></svg>PRODUCT OR TOPIC</h3>
+      <p>ONE OR TWO SENTENCES</p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="fig-h">
+  <h2 id="fig-h" class="section-h"><svg class="eye" viewBox="0 0 16 18" aria-hidden="true"><path d="M8 0.5l7 4v9l-7 4-7-4v-9z"/></svg>Figures that changed</h2>
+  <!-- SLOT figures: published figures that moved this month, one row per place or measure, with the size of the change and the reason. Delete the whole section when none moved. -->
+  <p class="intro">If you use Peskas figures in reports, these changed in MONTH.</p>
+  <dl class="changes">
+    <div class="change"><dt>PLACE OR MEASURE</dt><dd>WHAT CHANGED, BY HOW MUCH AND WHY</dd></div>
+  </dl>
+</section>
+
+<section class="next" aria-labelledby="next-h">
+  <h2 id="next-h" class="label">Next month</h2>
+  <!-- SLOT next: only work the release notes describe as finished but not yet public. Delete the whole section otherwise; never guess. -->
+  <p>NEXT MONTH</p>
+</section>
+
+<footer class="foot">
+  <section aria-labelledby="about-h">
+    <h2 id="about-h" class="label">About Peskas</h2>
+    <p>Peskas is WorldFish's open-source platform for small-scale fisheries data, run with national fisheries agencies and research partners. Enumerators record what boats land; Peskas checks those records, estimates catch, value and fishing activity for the whole fleet, and shares the results through public dashboards, a regional portal and a data API.</p>
+    <p>This bulletin covers Peskas in Timor-Leste, Kenya, Zanzibar and Mozambique and the Peskas Coasts regional portal. It is written each month from the release notes the Peskas team publishes with every software update.</p>
+  </section>
+  <section aria-labelledby="links-h">
+    <h2 id="links-h" class="label">Open the platforms</h2>
+    <ul class="links">
+      <li><a href="https://peskas.org">peskas.org</a></li>
+      <li><a href="https://coasts.peskas.org">Peskas Coasts</a></li>
+      <li><a href="https://timor.peskas.org">Peskas Timor-Leste</a></li>
+      <li><a href="https://zanzibar.peskas.org/en">Peskas Zanzibar</a> · <a href="https://kenya.peskas.org/en">Kenya</a> · <a href="https://mozambique.peskas.org/en">Mozambique</a></li>
+    </ul>
+    <p>Contact: <span class="email">peskas.platform@gmail.com</span></p>
+  </section>
+</footer>
+
+</div>
+
+<script>
+// The data-flow map and each update's step labels are built from the data-stages tags, so they always agree.
+const STEPS = { collect: "Collect", check: "Check", estimate: "Estimate", share: "Share", show: "Show" };
+const counts = {};
+document.querySelectorAll("[data-stages]").forEach((el) => {
+  const steps = el.dataset.stages.split(/\s+/).filter((s) => STEPS[s]);
+  steps.forEach((s) => (counts[s] = (counts[s] || 0) + 1));
+  const tags = el.querySelector("[data-stage-tags]");
+  if (tags) tags.innerHTML = steps.map((s) => `<li><svg class="ico" aria-hidden="true"><use href="#i-${s}"/></svg>${STEPS[s]}</li>`).join("");
+  const icon = el.querySelector("[data-stage-icon]");
+  if (icon && steps[0]) icon.innerHTML = `<use href="#i-${steps[0]}"/>`;
+});
+document.querySelectorAll(".step").forEach((li) => {
+  const n = counts[li.dataset.step] || 0;
+  li.classList.toggle("is-active", n > 0);
+  li.querySelector("[data-count]").textContent = n ? `${n} update${n > 1 ? "s" : ""} this month` : "No updates this month";
+});
+</script>

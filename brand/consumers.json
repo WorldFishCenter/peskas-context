@@ -1,0 +1,136 @@
+{
+  "about": "Which brand files each Peskas repo gets, and where. Keys are the repos' folder names next to peskas-context; each pair is [file in brand/, path in that repo]. R packages get r_package_files, with {name} their hex. sync.py copies them; sync.py --check reports any that differ.",
+  "repos": {
+    "peskas.dashboard": {
+      "files": [
+        ["code/peskas-logo.tsx", "apps/isomorphic-i18n/src/components/peskas-logo.tsx"],
+        ["code/peskas-logo.dark-class.css", "apps/isomorphic-i18n/src/components/peskas-logo.css"],
+        ["favicon/favicon.svg", "apps/isomorphic-i18n/public/favicon.svg"],
+        ["favicon/favicon.ico", "apps/isomorphic-i18n/public/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "apps/isomorphic-i18n/public/apple-touch-icon.png"],
+        ["og/zanzibar.png", "apps/isomorphic-i18n/public/og/tz.png"],
+        ["og/kenya.png", "apps/isomorphic-i18n/public/og/ke.png"],
+        ["og/mozambique.png", "apps/isomorphic-i18n/public/og/mz.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "peskas.show": {
+      "files": [
+        ["code/peskas-logo.jsx", "components/elements/PeskasLogo.js"],
+        ["code/peskas-logo.css", "components/elements/peskas-logo.css"],
+        ["favicon/favicon.svg", "app/icon.svg"],
+        ["favicon/favicon.ico", "app/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "app/apple-icon.png"],
+        ["og/peskas.png", "app/opengraph-image.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "peskas-validation": {
+      "files": [
+        ["code/peskas-logo.tsx", "src/components/common/PeskasLogo.tsx"],
+        ["code/peskas-logo.css", "src/components/common/peskas-logo.css"],
+        ["favicon/favicon.svg", "public/favicon.svg"],
+        ["favicon/favicon.ico", "public/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "public/apple-touch-icon.png"],
+        ["og/management-platform.png", "public/og/management-platform.png"],
+        ["png/peskas-logo-480.png", "public/email/peskas-logo.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "peskas.timor.portal.v2": {
+      "files": [
+        ["code/peskas-logo.tsx", "src/components/PeskasLogo.tsx"],
+        ["code/peskas-logo.bs-theme.css", "src/components/peskas-logo.css"],
+        ["favicon/favicon.svg", "public/favicon.svg"],
+        ["favicon/favicon.ico", "public/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "public/apple-touch-icon.png"],
+        ["og/timor-leste.png", "public/og.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "coasts": {
+      "files": [
+        ["code/peskas-logo.jsx", "src/components/PeskasLogo.jsx"],
+        ["code/peskas-logo.dark-class.css", "src/components/peskas-logo.css"],
+        ["favicon/favicon.svg", "public/favicon.svg"],
+        ["favicon/favicon.ico", "public/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "public/apple-touch-icon.png"],
+        ["og/coasts.png", "public/og/coasts.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "peskas.kenya.bmu.dashboard": {
+      "files": [
+        ["code/peskas-logo.tsx", "packages/isomorphic-core/src/components/peskas-logo.tsx"],
+        ["code/peskas-logo.data-theme.css", "apps/isomorphic-i18n/src/app/peskas-logo.css"],
+        ["favicon/favicon.svg", "apps/isomorphic-i18n/src/app/icon.svg"],
+        ["favicon/favicon.ico", "apps/isomorphic-i18n/src/app/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "apps/isomorphic-i18n/src/app/apple-icon.png"],
+        ["og/kenya-bmu.png", "apps/isomorphic-i18n/src/app/opengraph-image.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ]
+    },
+    "tracks-explorer": {
+      "files": [
+        ["code/peskas-logo.tsx", "src/components/PeskasLogo.tsx"],
+        ["code/peskas-logo.bs-theme.css", "src/components/peskas-logo.css"],
+        ["favicon/favicon.svg", "public/favicon.svg"],
+        ["favicon/favicon.ico", "public/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "public/apple-touch-icon.png"],
+        ["app/icon-192.png", "public/icons/icon-192.png"],
+        ["app/icon-512.png", "public/icons/icon-512.png"],
+        ["app/icon-192-maskable.png", "public/icons/icon-192-maskable.png"],
+        ["app/icon-512-maskable.png", "public/icons/icon-512-maskable.png"],
+        ["og/tracks.png", "public/og.png"],
+        ["native/icon-only.png", "assets/icon-only.png"],
+        ["native/icon-foreground.png", "assets/icon-foreground.png"],
+        ["native/icon-background.png", "assets/icon-background.png"],
+        ["native/splash.png", "assets/splash.png"],
+        ["native/splash-dark.png", "assets/splash-dark.png"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"]
+      ],
+      "after": "The Android and iOS icons and splash screens come from assets/: run `npm run assets`, then `npx cap sync`."
+    },
+    "peskas-api": {
+      "files": [
+        ["favicon/favicon.svg", "src/peskas_api/static/favicon.svg"],
+        ["favicon/favicon.ico", "src/peskas_api/static/favicon.ico"],
+        ["favicon/apple-touch-icon.png", "src/peskas_api/static/apple-touch-icon.png"],
+        ["svg/peskas-logo.svg", "src/peskas_api/static/peskas-logo.svg"],
+        ["svg/peskas-logo-dark.svg", ".github/images/peskas-logo-dark.svg"],
+        ["svg/peskas-logo.svg", ".github/images/peskas-logo.svg"]
+      ]
+    },
+    "peskas.coasts": {
+      "r_package": "coasts"
+    },
+    "peskas.kenya.data.pipeline": {
+      "r_package": "kenya"
+    },
+    "peskas.zanzibar.data.pipeline": {
+      "r_package": "zanzibar"
+    },
+    "peskas.mozambique.data.pipeline": {
+      "r_package": "mozambique"
+    },
+    "peskas.timor.data.pipeline": {
+      "r_package": "timor-leste"
+    }
+  },
+  "r_package_files": [
+    ["r/hex-{name}.png", "man/figures/logo.png"],
+    ["favicon/favicon.ico", "pkgdown/favicon/favicon.ico"],
+    ["favicon/favicon.svg", "pkgdown/favicon/favicon.svg"],
+    ["favicon/favicon-96x96.png", "pkgdown/favicon/favicon-96x96.png"],
+    ["favicon/apple-touch-icon.png", "pkgdown/favicon/apple-touch-icon.png"],
+    ["app/icon-192-maskable.png", "pkgdown/favicon/web-app-manifest-192x192.png"],
+    ["app/icon-512-maskable.png", "pkgdown/favicon/web-app-manifest-512x512.png"]
+  ]
+}

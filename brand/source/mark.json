@@ -1,0 +1,212 @@
+{
+ "about": "The Peskas mark: a tuna-shaped outline (cubic B\u00e9ziers, facing right) filled with a grid of pointy-top hexagon cells. Cells shade from the tail to the head in four bands; one cell is the eye. Gaps between cells stop 'rim' units inside the outline, so the edge is one continuous line; the tail behind 'solid_x' has no gaps.",
+ "outline": [
+  [
+   28,
+   25.5
+  ],
+  [
+   "C",
+   [
+    40,
+    17
+   ],
+   [
+    56,
+    10
+   ],
+   [
+    72,
+    10.5
+   ]
+  ],
+  [
+   "C",
+   [
+    86,
+    11
+   ],
+   [
+    95,
+    19
+   ],
+   [
+    99,
+    28
+   ]
+  ],
+  [
+   "C",
+   [
+    95,
+    37
+   ],
+   [
+    86,
+    45
+   ],
+   [
+    72,
+    45.5
+   ]
+  ],
+  [
+   "C",
+   [
+    56,
+    46
+   ],
+   [
+    40,
+    39
+   ],
+   [
+    28,
+    30.5
+   ]
+  ],
+  [
+   "C",
+   [
+    20,
+    36
+   ],
+   [
+    10,
+    46
+   ],
+   [
+    2,
+    54
+   ]
+  ],
+  [
+   "C",
+   [
+    9,
+    44
+   ],
+   [
+    14,
+    35
+   ],
+   [
+    16,
+    28
+   ]
+  ],
+  [
+   "C",
+   [
+    14,
+    21
+   ],
+   [
+    9,
+    12
+   ],
+   [
+    2,
+    2
+   ]
+  ],
+  [
+   "C",
+   [
+    10,
+    10
+   ],
+   [
+    20,
+    20
+   ],
+   [
+    28,
+    25.5
+   ]
+  ]
+ ],
+ "cell_spacing": 9.0,
+ "gap": 1.1,
+ "rim": 2.1,
+ "solid_x": 29,
+ "min_gap_fragment": 0.9,
+ "eye_near": [
+  85,
+  23
+ ],
+ "band_edges": [
+  "tail joint",
+  0.52,
+  0.72
+ ],
+ "palettes": {
+  "light": {
+   "about": "on light backgrounds",
+   "colours": [
+    "#a9d1d4",
+    "#5aa8af",
+    "#006d77",
+    "#0b2233",
+    "#d96c50"
+   ]
+  },
+  "dark": {
+   "about": "on dark backgrounds",
+   "colours": [
+    "#3a6c77",
+    "#3f8a93",
+    "#8ccbd0",
+    "#ffffff",
+    "#e69f8d"
+   ]
+  },
+  "small_light": {
+   "about": "48px and below on light (tab icons): the tail darkens so it stays visible",
+   "colours": [
+    "#5aa8af",
+    "#2f8f97",
+    "#006d77",
+    "#0b2233",
+    "#d96c50"
+   ]
+  },
+  "small_dark": {
+   "about": "48px and below on dark, and on navy tiles (app icons)",
+   "colours": [
+    "#5aa8af",
+    "#7fbfc5",
+    "#b5e0e3",
+    "#ffffff",
+    "#e69f8d"
+   ]
+  },
+  "ink": {
+   "about": "one colour, navy",
+   "colours": [
+    "#0b2233",
+    "#0b2233",
+    "#0b2233",
+    "#0b2233",
+    null
+   ]
+  },
+  "white": {
+   "about": "one colour, white",
+   "colours": [
+    "#ffffff",
+    "#ffffff",
+    "#ffffff",
+    "#ffffff",
+    null
+   ]
+  }
+ },
+ "navy": "#0b2233",
+ "lockup": {
+  "about": "The mark is 0.87em tall (69.6px of the wordmark's 80px), centred on y=40 and 29.8px before the wordmark.",
+  "mark_height": 69.6,
+  "centre_y": 40,
+  "gap": 29.8
+ }
+}
