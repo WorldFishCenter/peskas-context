@@ -2,13 +2,21 @@
 #
 #   cd ../peskas.kenya.data.pipeline   # or zanzibar, mozambique
 #   Rscript ../peskas-context/dictionary/prod_check.R
+#   Rscript prod_check.R peskas.kenya.data.pipeline   # in the pipeline's CI, after export_portal()
 #
-# Reads the pipeline's own .env and inst/config.yml (production) and stops unless the
-# database is portal-prod. For each collection in the contract: its columns, the measure
-# names it carries, and no two rows at the same grain. Exit 1 on any mismatch.
+# Reads the pipeline's own .env and inst/config.yml (production), or with a package name
+# its installed config through coasts::read_config(), as export_portal() does, and stops
+# unless the database is portal-prod. For each collection in the contract: its columns,
+# the measure names it carries, and no two rows at the same grain. Exit 1 on any mismatch.
 
-suppressMessages(dotenv::load_dot_env(".env"))
-conf <- config::get(config = "production", file = "inst/config.yml")
+package <- commandArgs(trailingOnly = TRUE)[1]
+if (is.na(package)) {
+  suppressMessages(dotenv::load_dot_env(".env"))
+  conf <- config::get(config = "production", file = "inst/config.yml")
+} else {
+  Sys.setenv(R_CONFIG_ACTIVE = "production")
+  conf <- coasts::read_config(package)
+}
 db <- conf$storage$mongodb$databases$dashboard$database_name
 stopifnot(db == "portal-prod")
 url <- conf$storage$mongodb$connection_strings$main

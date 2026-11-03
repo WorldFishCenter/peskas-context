@@ -30,6 +30,10 @@ One description of the data the Peskas dashboards publish: what each collection 
 - `Rscript ../peskas-context/dictionary/prod_check.R`, run from a country pipeline: read-only against that country's `portal-prod`, the columns, measure names and one row per grain match `portal.odcs.json`.
 - `python golden.py`: asks AskFish, through a running dashboard (`--url`, default `http://localhost:3001`), questions the pages answer, and compares. One AI call each; `--page-only` prints the page's figures alone.
 
+The first two run by themselves every Monday and on each change here, against the dashboard's `dev` (`.github/workflows/dictionary.yaml`). `prod_check.R` runs after every portal export in the Kenya, Zanzibar and Mozambique pipelines, reading this folder from `main`. A failure turns the run red.
+
+The dashboard combines figures, for its pages and for AskFish, with the same code (`packages/api/src/lib/cells.ts`); AskFish asks for them (`aggregateOver`) and doesn't redo the maths. `metrics.json` says how each measure combines, and `check.py` checks the dashboard agrees.
+
 ## Not covered yet
 
 The coasts database collections the dashboard also reads (`wio_gaul2`, `pds_effort`, `pds_fishing_grounds`), peskas-api's datasets (it keeps `field_metadata.py`), and the Kenya BMU dashboard's `app` database.

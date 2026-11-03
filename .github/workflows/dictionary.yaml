@@ -1,0 +1,30 @@
+name: Data dictionary
+
+on:
+  push:
+    paths: ["dictionary/**", "brand/sync.py", ".github/workflows/dictionary.yaml"]
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: peskas-context
+      - uses: actions/checkout@v4
+        with:
+          repository: WorldFishCenter/peskas.dashboard.app
+          path: peskas.dashboard
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: astral-sh/setup-uv@v6
+      - name: The dashboard's catalog is the generated one
+        working-directory: peskas-context/dictionary
+        run: python3 sync.py --check
+      - name: The dictionary agrees with itself and with the dashboard
+        working-directory: peskas-context/dictionary
+        run: uv run --no-project --with jsonschema python check.py
