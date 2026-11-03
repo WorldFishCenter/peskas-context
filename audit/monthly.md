@@ -14,4 +14,6 @@ In every repo, check `CLAUDE.md`, `.claude/rules/*.md`, `.claude/settings.json` 
 6. **Public names and contact** across READMEs, as listed in `ecosystem.md` under "Repo map".
 7. **NEWS**: per repo, count the entries added in the last 35 days that name a function, file, column or package, or that a non-technical reader would not follow (rule 3 in `rules.md`). Report one line per repo with the count; those entries are already published as releases, so do not list them one by one.
 
+8. **Data dictionary**: in `peskas-context/dictionary/`, run `python sync.py --check` and `uv run --with jsonschema check.py`, and from each of the Kenya, Zanzibar and Mozambique pipelines `Rscript ../peskas-context/dictionary/prod_check.R` (read-only; it needs the pipeline's `.env`, so list it under "Not checked" where there is none). Report each problem line.
+
 Report findings grouped by repo, most important first. For each, give `file:line`, what is wrong, the evidence, and a one-line proposed fix. Report only real mismatches, not style preferences. End with the repos that had no findings, then a "Not checked" list. Keep the report under about 800 words.

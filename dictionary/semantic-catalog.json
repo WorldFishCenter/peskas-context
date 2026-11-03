@@ -1,0 +1,2090 @@
+{
+  "catalogVersion": "0.7.0",
+  "contractVersion": "1.0",
+  "status": "generated_from_peskas_data_dictionary",
+  "sourceEvidence": {
+    "repository": "peskas-context/dictionary",
+    "liveMetadataAsOf": "2026-10-28",
+    "limitations": [
+      "Missing district-months are absent observations, not zero: a zero would claim the month was surveyed.",
+      "Every view stops at the last complete month: the current month is left out while its landings come in.",
+      "Figures resting on fewer than 10 landings are thin and can swing widely from one month to the next.",
+      "Recorded figures describe the surveyed landings, not the whole fleet.",
+      "Estimated figures exist only for district-months with at least 10 surveyed trips, and leave out fishing without boats, such as gleaning on foot.",
+      "Values are as reported at the landing site, not adjusted for inflation.",
+      "Averages combine weighted, as the dashboard does: weighted_mean_by_landings and weighted_mean_by_catch name the weight in each rollup's note.",
+      "observedDocuments is not maintained and reads 0.",
+      "kenya_bmu_monthly and kenya_bmu_gear_monthly come from the Kenya BMU dashboard's own app database, outside the portal data dictionary."
+    ]
+  },
+  "scopeModes": {
+    "restricted": {
+      "pageDatasetsHard": true,
+      "dashboardFiltersHard": true,
+      "questionCanOverrideDashboardFilters": false,
+      "pageContextIsHint": false,
+      "description": "Use only datasets mapped to the current Peskas page and keep active dashboard filters as hard constraints."
+    },
+    "unrestricted": {
+      "pageDatasetsHard": false,
+      "dashboardFiltersHard": false,
+      "questionCanOverrideDashboardFilters": true,
+      "pageContextIsHint": true,
+      "description": "Interpret the question first, then select any queryable dataset in the active Peskas country; explicit question filters take precedence."
+    }
+  },
+  "countries": {
+    "TZ": {
+      "name": "Zanzibar",
+      "iso3": "TZA",
+      "currencyCode": "TZS"
+    },
+    "KE": {
+      "name": "Kenya",
+      "iso3": "KEN",
+      "currencyCode": "KES"
+    },
+    "MZ": {
+      "name": "Mozambique",
+      "iso3": "MOZ",
+      "currencyCode": "MZN"
+    }
+  },
+  "pageScopes": {
+    "catch": {
+      "datasets": [
+        "monthly_district_summary",
+        "gear_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range"
+      ],
+      "description": "Catch rate, estimated catch, and catch-by-gear analytics. Current selected metric is only a hint; all approved Catch-page metrics remain available under the selected district/time filters."
+    },
+    "revenue": {
+      "datasets": [
+        "monthly_district_summary",
+        "gear_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range"
+      ],
+      "description": "Revenue per unit effort, estimated revenue, and revenue-by-gear analytics. Current selected metric is only a hint; all approved Revenue-page metrics remain available under the selected district/time filters."
+    },
+    "catch_composition": {
+      "datasets": [
+        "taxa_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range",
+        "metric"
+      ],
+      "description": "Species/taxa composition and district-species analytics with production-verified monthly time filtering."
+    },
+    "map": {
+      "datasets": [
+        "district_summary"
+      ],
+      "contextFilters": [
+        "country",
+        "time_range",
+        "metric"
+      ],
+      "description": "District-level indicator context for the map page."
+    },
+    "home": {
+      "datasets": [
+        "district_summary"
+      ],
+      "contextFilters": [
+        "country",
+        "time_range",
+        "metric"
+      ],
+      "description": "Homepage indicator cards and district summaries."
+    }
+  },
+  "datasets": {
+    "monthly_district_summary": {
+      "queryable": true,
+      "lineage": "district",
+      "collection": "monthly_summaries",
+      "grain": [
+        "district",
+        "month",
+        "metric"
+      ],
+      "layout": "long",
+      "timeField": "date",
+      "geographyKey": "gaul_2_name",
+      "pageScopes": [
+        "catch",
+        "revenue"
+      ],
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      },
+      "derivationStatus": "described_by_peskas_data_dictionary",
+      "dimensions": {
+        "district": {
+          "field": "gaul_2_name",
+          "aliases": [
+            "district",
+            "county",
+            "area"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "metric": {
+          "field": "metric",
+          "aliases": [
+            "metric",
+            "measure",
+            "indicator"
+          ]
+        }
+      },
+      "measures": {
+        "mean_catch_kg": {
+          "label": "Catch per trip",
+          "aliases": [
+            "catch per trip",
+            "mean catch",
+            "average catch"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_catch_price": {
+          "label": "Revenue per trip",
+          "aliases": [
+            "revenue per trip",
+            "mean catch value",
+            "average catch value",
+            "mean catch price"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Catch per unit effort",
+          "aliases": [
+            "cpue",
+            "catch rate",
+            "catch per unit effort",
+            "fishing productivity"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "kg/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Revenue per unit effort",
+          "aliases": [
+            "rpue",
+            "revenue per unit effort",
+            "revenue rate",
+            "fisher revenue rate"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_price_kg": {
+          "label": "Price per kg",
+          "aliases": [
+            "price per kg",
+            "price",
+            "fish price"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "estimated_fishing_trips": {
+          "label": "Estimated fishing trips (GPS tracker)",
+          "aliases": [
+            "estimated fishing trips",
+            "fishing trips",
+            "estimated trips",
+            "trip effort"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "trips",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_catch_tn": {
+          "label": "Estimated catch (GPS tracker)",
+          "aliases": [
+            "estimated catch",
+            "total catch",
+            "landings",
+            "catch tonnes"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "tonnes",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_revenue": {
+          "label": "Estimated revenue (GPS tracker)",
+          "aliases": [
+            "estimated revenue",
+            "revenue",
+            "earnings",
+            "income"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "sampling_rate": {
+          "label": "Share of boats tracked",
+          "aliases": [
+            "sampling rate",
+            "share of boats tracked",
+            "tracker coverage"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "share",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "unweighted_mean",
+              "note": "Combined, it is the plain mean of the district-months' shares, not the tracked share of the combined fleet."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "unweighted_mean",
+              "note": "Combined, it is the plain mean of the district-months' shares, not the tracked share of the combined fleet."
+            }
+          }
+        },
+        "estimated_fishing_trips_fao": {
+          "label": "Estimated fishing trips (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH fishing trips",
+            "FAO estimated trips",
+            "fishing days"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "trips",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_catch_tn_fao": {
+          "label": "Estimated catch (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH catch",
+            "FAO estimated catch",
+            "ARTFISH estimated catch"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "tonnes",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_revenue_fao": {
+          "label": "Estimated revenue (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH revenue",
+            "FAO estimated revenue",
+            "ARTFISH estimated revenue"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "TZ": {
+          "database": "portal-prod",
+          "collection": "monthly_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "KE": {
+          "database": "portal-prod",
+          "collection": "monthly_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "MZ": {
+          "database": "portal-prod",
+          "collection": "monthly_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 10000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "district",
+          "month",
+          "metric"
+        ],
+        "duplicateResolution": "one_row_per_grain"
+      },
+      "caveats": [
+        "Carries no landing counts: the landings that weight an average come from districts_summaries (n_submissions of the same district and month)."
+      ]
+    },
+    "district_summary": {
+      "queryable": true,
+      "lineage": "district",
+      "collection": "districts_summaries",
+      "grain": [
+        "district",
+        "month",
+        "indicator"
+      ],
+      "layout": "long",
+      "timeField": "date",
+      "geographyKey": "gaul_2_name",
+      "pageScopes": [
+        "home",
+        "map"
+      ],
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      },
+      "derivationStatus": "described_by_peskas_data_dictionary",
+      "dimensions": {
+        "district": {
+          "field": "gaul_2_name",
+          "aliases": [
+            "district",
+            "county",
+            "area"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "indicator": {
+          "field": "indicator",
+          "aliases": [
+            "metric",
+            "measure",
+            "indicator"
+          ]
+        }
+      },
+      "measures": {
+        "n_submissions": {
+          "label": "Landings surveyed",
+          "aliases": [
+            "landings surveyed",
+            "submissions",
+            "surveyed trips",
+            "records"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "landings",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum"
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum"
+            }
+          }
+        },
+        "n_fishers": {
+          "label": "Fishers per trip",
+          "aliases": [
+            "crew size",
+            "fishers per trip",
+            "crew"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "fishers",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "trip_duration_hrs": {
+          "label": "Trip duration",
+          "aliases": [
+            "trip duration",
+            "trip hours",
+            "fishing duration"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "hours",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_catch_kg": {
+          "label": "Catch per trip",
+          "aliases": [
+            "catch per trip",
+            "mean catch",
+            "average catch"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_catch_price": {
+          "label": "Revenue per trip",
+          "aliases": [
+            "revenue per trip",
+            "mean catch value",
+            "average catch value",
+            "mean catch price"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Catch per unit effort",
+          "aliases": [
+            "cpue",
+            "catch rate",
+            "catch per unit effort",
+            "fishing productivity"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "kg/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Revenue per unit effort",
+          "aliases": [
+            "rpue",
+            "revenue per unit effort",
+            "revenue rate",
+            "fisher revenue rate"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "mean_price_kg": {
+          "label": "Price per kg",
+          "aliases": [
+            "price per kg",
+            "price",
+            "fish price"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of district_summary at the same district and month."
+            }
+          }
+        },
+        "estimated_fishing_trips": {
+          "label": "Estimated fishing trips (GPS tracker)",
+          "aliases": [
+            "estimated fishing trips",
+            "fishing trips",
+            "estimated trips",
+            "trip effort"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "trips",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_catch_tn": {
+          "label": "Estimated catch (GPS tracker)",
+          "aliases": [
+            "estimated catch",
+            "total catch",
+            "landings",
+            "catch tonnes"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "tonnes",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_revenue": {
+          "label": "Estimated revenue (GPS tracker)",
+          "aliases": [
+            "estimated revenue",
+            "revenue",
+            "earnings",
+            "income"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_gps_tracker",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "sampling_rate": {
+          "label": "Share of boats tracked",
+          "aliases": [
+            "sampling rate",
+            "share of boats tracked",
+            "tracker coverage"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "share",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "unweighted_mean",
+              "note": "Combined, it is the plain mean of the district-months' shares, not the tracked share of the combined fleet."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "unweighted_mean",
+              "note": "Combined, it is the plain mean of the district-months' shares, not the tracked share of the combined fleet."
+            }
+          }
+        },
+        "estimated_fishing_trips_fao": {
+          "label": "Estimated fishing trips (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH fishing trips",
+            "FAO estimated trips",
+            "fishing days"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "trips",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_catch_tn_fao": {
+          "label": "Estimated catch (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH catch",
+            "FAO estimated catch",
+            "ARTFISH estimated catch"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "tonnes",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        },
+        "estimated_revenue_fao": {
+          "label": "Estimated revenue (FAO ARTFISH)",
+          "aliases": [
+            "ARTFISH revenue",
+            "FAO estimated revenue",
+            "ARTFISH estimated revenue"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "{currency}",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up the district-months both methods estimate, as the pages do (every district-month this method estimates where the two share none)."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "TZ": {
+          "database": "portal-prod",
+          "collection": "districts_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "KE": {
+          "database": "portal-prod",
+          "collection": "districts_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "MZ": {
+          "database": "portal-prod",
+          "collection": "districts_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 10000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "district",
+          "month",
+          "indicator"
+        ],
+        "duplicateResolution": "one_row_per_grain"
+      },
+      "caveats": [
+        "A district-month with no landings has no row or a null value: it is a gap in data collection, not zero fishing."
+      ]
+    },
+    "gear_summary_district": {
+      "queryable": true,
+      "lineage": "district",
+      "collection": "gear_summaries",
+      "grain": [
+        "district",
+        "month",
+        "gear",
+        "indicator"
+      ],
+      "layout": "long",
+      "timeField": "date",
+      "geographyKey": "gaul_2_name",
+      "pageScopes": [
+        "catch",
+        "revenue"
+      ],
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      },
+      "derivationStatus": "described_by_peskas_data_dictionary",
+      "dimensions": {
+        "district": {
+          "field": "gaul_2_name",
+          "aliases": [
+            "district",
+            "county",
+            "area"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "gear": {
+          "field": "gear",
+          "aliases": [
+            "gear",
+            "fishing gear",
+            "gear type"
+          ]
+        },
+        "indicator": {
+          "field": "indicator",
+          "aliases": [
+            "metric",
+            "measure",
+            "indicator"
+          ]
+        }
+      },
+      "measures": {
+        "n_submissions": {
+          "label": "Landings surveyed",
+          "aliases": [
+            "landings surveyed",
+            "submissions",
+            "surveyed trips",
+            "records"
+          ],
+          "kind": "count",
+          "unit": {
+            "value": "landings",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum"
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum"
+            },
+            "acrossGear": {
+              "status": "allowed",
+              "method": "sum"
+            }
+          }
+        },
+        "cpue": {
+          "label": "Catch per unit effort",
+          "aliases": [
+            "cpue",
+            "catch rate",
+            "catch per unit effort",
+            "fishing productivity"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "kg/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            },
+            "acrossGear": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            }
+          }
+        },
+        "rpue": {
+          "label": "Revenue per unit effort",
+          "aliases": [
+            "rpue",
+            "revenue per unit effort",
+            "revenue rate",
+            "fisher revenue rate"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/fisher/hour",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            },
+            "acrossGear": {
+              "status": "allowed",
+              "method": "weighted_mean_by_landings",
+              "note": "Weighted by the landings behind each value: n_submissions of gear_summary_district at the same district, month and gear."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "TZ": {
+          "database": "portal-prod",
+          "collection": "gear_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "KE": {
+          "database": "portal-prod",
+          "collection": "gear_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "MZ": {
+          "database": "portal-prod",
+          "collection": "gear_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 20000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "district",
+          "month",
+          "gear",
+          "indicator"
+        ],
+        "duplicateResolution": "one_row_per_grain"
+      },
+      "caveats": [
+        "Describes the surveyed landings: enumerators may visit some landing sites, and so some gears, more often than others."
+      ]
+    },
+    "taxa_summary_district": {
+      "queryable": true,
+      "lineage": "district",
+      "collection": "taxa_summaries",
+      "grain": [
+        "district",
+        "month",
+        "taxon",
+        "metric"
+      ],
+      "layout": "long",
+      "timeField": "date",
+      "geographyKey": "gaul_2_name",
+      "pageScopes": [
+        "catch_composition"
+      ],
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      },
+      "derivationStatus": "described_by_peskas_data_dictionary",
+      "dimensions": {
+        "district": {
+          "field": "gaul_2_name",
+          "aliases": [
+            "district",
+            "county",
+            "area"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "taxon": {
+          "field": "catch_taxon",
+          "aliases": [
+            "species",
+            "taxon",
+            "fish",
+            "species group"
+          ]
+        },
+        "metric": {
+          "field": "metric",
+          "aliases": [
+            "metric",
+            "measure",
+            "indicator"
+          ]
+        }
+      },
+      "measures": {
+        "catch_kg": {
+          "label": "Recorded catch",
+          "aliases": [
+            "recorded catch",
+            "species catch",
+            "catch composition",
+            "catch kg"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "taxon"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum"
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum"
+            },
+            "acrossTaxon": {
+              "status": "allowed",
+              "method": "sum"
+            }
+          }
+        },
+        "mean_length": {
+          "label": "Mean length",
+          "aliases": [
+            "mean length",
+            "average fish length",
+            "fish length",
+            "size"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "cm",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "taxon"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_catch",
+              "note": "Weighted by the recorded catch behind each value: catch_kg of taxa_summary_district at the same district, month and taxon."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_catch",
+              "note": "Weighted by the recorded catch behind each value: catch_kg of taxa_summary_district at the same district, month and taxon."
+            },
+            "acrossTaxon": {
+              "status": "forbidden",
+              "note": "Values of different taxa do not combine into one."
+            }
+          }
+        },
+        "price_kg": {
+          "label": "Species price per kg",
+          "aliases": [
+            "species price",
+            "taxon price",
+            "price per kg of a species"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "{currency}/kg",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "taxon"
+          ],
+          "derivationStatus": "recorded",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "weighted_mean_by_catch",
+              "note": "Weighted by the recorded catch behind each value: catch_kg of taxa_summary_district at the same district, month and taxon."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "weighted_mean_by_catch",
+              "note": "Weighted by the recorded catch behind each value: catch_kg of taxa_summary_district at the same district, month and taxon."
+            },
+            "acrossTaxon": {
+              "status": "forbidden",
+              "note": "Values of different taxa do not combine into one."
+            }
+          }
+        },
+        "estimated_catch_tn_fao": {
+          "label": "Estimated catch by species (FAO ARTFISH)",
+          "aliases": [
+            "estimated catch by species",
+            "ARTFISH catch by species",
+            "species estimate"
+          ],
+          "kind": "total",
+          "unit": {
+            "value": "tonnes",
+            "status": "dictionary"
+          },
+          "nativeGrain": [
+            "district",
+            "month",
+            "taxon"
+          ],
+          "derivationStatus": "estimated_fao_artfish",
+          "rollups": {
+            "acrossDistrict": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up only the district-months with an estimate."
+            },
+            "acrossTime": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up only the district-months with an estimate."
+            },
+            "acrossTaxon": {
+              "status": "allowed",
+              "method": "sum",
+              "note": "Adds up only the district-months with an estimate."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "TZ": {
+          "database": "portal-prod",
+          "collection": "taxa_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "KE": {
+          "database": "portal-prod",
+          "collection": "taxa_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        },
+        "MZ": {
+          "database": "portal-prod",
+          "collection": "taxa_summaries",
+          "status": "available",
+          "observedDocuments": 0
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 25000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "district",
+          "month",
+          "taxon",
+          "metric"
+        ],
+        "duplicateResolution": "one_row_per_grain"
+      },
+      "caveats": [
+        "Recorded catch by taxon is the catch of the surveyed landings only, a small part of the total; in Kenya it is the identified sample of each catch.",
+        "Some taxa are recorded at family or genus level."
+      ]
+    },
+    "kenya_bmu_monthly": {
+      "queryable": true,
+      "lineage": "kenya_bmu",
+      "collection": "catch_monthly",
+      "grain": [
+        "bmu",
+        "month"
+      ],
+      "layout": "wide",
+      "timeField": "date",
+      "geographyKey": "BMU",
+      "pageScopes": [],
+      "geographicFrame": {
+        "level": "bmu",
+        "namespace": "kenya_bmu",
+        "parentMappingStatus": "unverified",
+        "note": "BMU is a separate Kenya geographic frame; no implicit BMU-to-district/GAUL-2 mapping is permitted."
+      },
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "stage32_source_grain_approved"
+      },
+      "derivationStatus": "upstream_unverified_source_grain_only",
+      "dimensions": {
+        "bmu": {
+          "field": "BMU",
+          "aliases": [
+            "bmu",
+            "beach management unit",
+            "management unit"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        }
+      },
+      "measures": {
+        "mean_effort": {
+          "label": "Mean effort",
+          "aliases": [
+            "mean effort",
+            "effort",
+            "fishing effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source effort units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Mean CPUE",
+          "aliases": [
+            "mean cpue",
+            "cpue",
+            "catch rate",
+            "catch per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUE units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_cpua": {
+          "label": "Mean CPUA",
+          "aliases": [
+            "mean cpua",
+            "cpua",
+            "catch per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUA units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Mean RPUE",
+          "aliases": [
+            "mean rpue",
+            "rpue",
+            "revenue rate",
+            "revenue per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUE units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_rpua": {
+          "label": "Mean RPUA",
+          "aliases": [
+            "mean rpua",
+            "rpua",
+            "revenue per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUA units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "KE": {
+          "database": "app",
+          "collection": "catch_monthly",
+          "status": "available",
+          "observedDocuments": 1541
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 5000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "bmu",
+          "month"
+        ],
+        "duplicateResolution": "verified_unique_source_grain"
+      },
+      "caveats": [
+        "Stage 3.1B verified zero duplicate groups at BMU × month grain across 1,540 analytical rows.",
+        "Only exact stored monthly observations are activated; upstream formulas/weights for mean/rate fields remain unverified.",
+        "Cross-BMU and cross-time reductions are forbidden.",
+        "BMU is not district/GAUL-2 and no implicit geographic join is permitted.",
+        "This dataset is unrestricted-only until a future Peskas page explicitly operates in the Kenya BMU frame."
+      ]
+    },
+    "kenya_bmu_gear_monthly": {
+      "queryable": true,
+      "lineage": "kenya_bmu",
+      "collection": "gear_summaries",
+      "grain": [
+        "bmu",
+        "month",
+        "gear"
+      ],
+      "layout": "wide",
+      "timeField": "date",
+      "geographyKey": "BMU",
+      "pageScopes": [],
+      "geographicFrame": {
+        "level": "bmu",
+        "namespace": "kenya_bmu",
+        "parentMappingStatus": "unverified",
+        "note": "BMU is a separate Kenya geographic frame; no implicit BMU-to-district/GAUL-2 mapping is permitted."
+      },
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "stage32_source_grain_approved"
+      },
+      "derivationStatus": "upstream_unverified_source_grain_only",
+      "dimensions": {
+        "bmu": {
+          "field": "BMU",
+          "aliases": [
+            "bmu",
+            "beach management unit",
+            "management unit"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "gear": {
+          "field": "gear",
+          "aliases": [
+            "gear",
+            "fishing gear",
+            "gear type"
+          ]
+        }
+      },
+      "measures": {
+        "mean_effort": {
+          "label": "Mean effort",
+          "aliases": [
+            "mean effort",
+            "effort",
+            "fishing effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source effort units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Mean CPUE",
+          "aliases": [
+            "mean cpue",
+            "cpue",
+            "catch rate",
+            "catch per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUE units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_cpua": {
+          "label": "Mean CPUA",
+          "aliases": [
+            "mean cpua",
+            "cpua",
+            "catch per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUA units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Mean RPUE",
+          "aliases": [
+            "mean rpue",
+            "rpue",
+            "revenue rate",
+            "revenue per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUE units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_rpua": {
+          "label": "Mean RPUA",
+          "aliases": [
+            "mean rpua",
+            "rpua",
+            "revenue per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUA units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "KE": {
+          "database": "app",
+          "collection": "gear_summaries",
+          "status": "available",
+          "observedDocuments": 12321
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 15000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "bmu",
+          "month",
+          "gear"
+        ],
+        "duplicateResolution": "verified_unique_source_grain"
+      },
+      "caveats": [
+        "Stage 3.1B verified zero duplicate groups at BMU × month × gear grain.",
+        "Only exact stored monthly gear observations are activated; upstream formulas/weights remain unverified.",
+        "Cross-BMU, cross-time, and cross-gear reductions of stored mean/rate values are forbidden.",
+        "BMU is not district/GAUL-2 and no implicit geographic join is permitted.",
+        "This dataset is unrestricted-only until a future Peskas page explicitly operates in the Kenya BMU frame."
+      ]
+    }
+  },
+  "discoveredSources": [],
+  "geographicAlternatives": {
+    "KE": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "If the requested Kenya measure or dashboard scope cannot be served at BMU grain, results use independent district-level summaries. They are NOT estimates for individual BMUs or a BMU-to-district conversion."
+      }
+    ],
+    "TZ": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "BMU-level data are not available for these measures in the Zanzibar catalog. Results are independent district-level summaries, NOT estimates for individual BMUs or a BMU-to-district geographic conversion."
+      }
+    ],
+    "MZ": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "BMU-level data are not available for these measures in the Mozambique catalog. Results are independent district-level summaries, NOT estimates for individual BMUs or a BMU-to-district geographic conversion."
+      }
+    ]
+  }
+}

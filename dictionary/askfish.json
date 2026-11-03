@@ -1,0 +1,682 @@
+{
+  "about": "What AskFish's catalog needs beyond the dictionary: which portal collections it may query and under which dataset id, its pages and scope modes, row limits, and Hamza's own rules (BMU substitutions, the two Kenya BMU datasets from the BMU dashboard's app database), copied as they were in catalog 0.6.0. build.py turns this, portal.odcs.json and metrics.json into semantic-catalog.json.",
+  "catalogVersion": "0.7.0",
+  "scopeModes": {
+    "restricted": {
+      "pageDatasetsHard": true,
+      "dashboardFiltersHard": true,
+      "questionCanOverrideDashboardFilters": false,
+      "pageContextIsHint": false,
+      "description": "Use only datasets mapped to the current Peskas page and keep active dashboard filters as hard constraints."
+    },
+    "unrestricted": {
+      "pageDatasetsHard": false,
+      "dashboardFiltersHard": false,
+      "questionCanOverrideDashboardFilters": true,
+      "pageContextIsHint": true,
+      "description": "Interpret the question first, then select any queryable dataset in the active Peskas country; explicit question filters take precedence."
+    }
+  },
+  "pageScopes": {
+    "catch": {
+      "datasets": [
+        "monthly_district_summary",
+        "gear_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range"
+      ],
+      "description": "Catch rate, estimated catch, and catch-by-gear analytics. Current selected metric is only a hint; all approved Catch-page metrics remain available under the selected district/time filters."
+    },
+    "revenue": {
+      "datasets": [
+        "monthly_district_summary",
+        "gear_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range"
+      ],
+      "description": "Revenue per unit effort, estimated revenue, and revenue-by-gear analytics. Current selected metric is only a hint; all approved Revenue-page metrics remain available under the selected district/time filters."
+    },
+    "catch_composition": {
+      "datasets": [
+        "taxa_summary_district"
+      ],
+      "contextFilters": [
+        "country",
+        "districts",
+        "time_range",
+        "metric"
+      ],
+      "description": "Species/taxa composition and district-species analytics with production-verified monthly time filtering."
+    },
+    "map": {
+      "datasets": [
+        "district_summary"
+      ],
+      "contextFilters": [
+        "country",
+        "time_range",
+        "metric"
+      ],
+      "description": "District-level indicator context for the map page."
+    },
+    "home": {
+      "datasets": [
+        "district_summary"
+      ],
+      "contextFilters": [
+        "country",
+        "time_range",
+        "metric"
+      ],
+      "description": "Homepage indicator cards and district summaries."
+    }
+  },
+  "datasets": {
+    "monthly_district_summary": {
+      "collection": "monthly_summaries",
+      "pageScopes": [
+        "catch",
+        "revenue"
+      ],
+      "maxRows": 10000,
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      }
+    },
+    "district_summary": {
+      "collection": "districts_summaries",
+      "pageScopes": [
+        "home",
+        "map"
+      ],
+      "maxRows": 10000,
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      }
+    },
+    "gear_summary_district": {
+      "collection": "gear_summaries",
+      "pageScopes": [
+        "catch",
+        "revenue"
+      ],
+      "maxRows": 20000,
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      }
+    },
+    "taxa_summary_district": {
+      "collection": "taxa_summaries",
+      "pageScopes": [
+        "catch_composition"
+      ],
+      "maxRows": 25000,
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      }
+    }
+  },
+  "extraDatasets": {
+    "kenya_bmu_monthly": {
+      "queryable": true,
+      "lineage": "kenya_bmu",
+      "collection": "catch_monthly",
+      "grain": [
+        "bmu",
+        "month"
+      ],
+      "layout": "wide",
+      "timeField": "date",
+      "geographyKey": "BMU",
+      "pageScopes": [],
+      "geographicFrame": {
+        "level": "bmu",
+        "namespace": "kenya_bmu",
+        "parentMappingStatus": "unverified",
+        "note": "BMU is a separate Kenya geographic frame; no implicit BMU-to-district/GAUL-2 mapping is permitted."
+      },
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "stage32_source_grain_approved"
+      },
+      "derivationStatus": "upstream_unverified_source_grain_only",
+      "dimensions": {
+        "bmu": {
+          "field": "BMU",
+          "aliases": [
+            "bmu",
+            "beach management unit",
+            "management unit"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        }
+      },
+      "measures": {
+        "mean_effort": {
+          "label": "Mean effort",
+          "aliases": [
+            "mean effort",
+            "effort",
+            "fishing effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source effort units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Mean CPUE",
+          "aliases": [
+            "mean cpue",
+            "cpue",
+            "catch rate",
+            "catch per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUE units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_cpua": {
+          "label": "Mean CPUA",
+          "aliases": [
+            "mean cpua",
+            "cpua",
+            "catch per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUA units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Mean RPUE",
+          "aliases": [
+            "mean rpue",
+            "rpue",
+            "revenue rate",
+            "revenue per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUE units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        },
+        "mean_rpua": {
+          "label": "Mean RPUA",
+          "aliases": [
+            "mean rpua",
+            "rpua",
+            "revenue per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUA units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "KE": {
+          "database": "app",
+          "collection": "catch_monthly",
+          "status": "available",
+          "observedDocuments": 1541
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 5000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "bmu",
+          "month"
+        ],
+        "duplicateResolution": "verified_unique_source_grain"
+      },
+      "caveats": [
+        "Stage 3.1B verified zero duplicate groups at BMU × month grain across 1,540 analytical rows.",
+        "Only exact stored monthly observations are activated; upstream formulas/weights for mean/rate fields remain unverified.",
+        "Cross-BMU and cross-time reductions are forbidden.",
+        "BMU is not district/GAUL-2 and no implicit geographic join is permitted.",
+        "This dataset is unrestricted-only until a future Peskas page explicitly operates in the Kenya BMU frame."
+      ]
+    },
+    "kenya_bmu_gear_monthly": {
+      "queryable": true,
+      "lineage": "kenya_bmu",
+      "collection": "gear_summaries",
+      "grain": [
+        "bmu",
+        "month",
+        "gear"
+      ],
+      "layout": "wide",
+      "timeField": "date",
+      "geographyKey": "BMU",
+      "pageScopes": [],
+      "geographicFrame": {
+        "level": "bmu",
+        "namespace": "kenya_bmu",
+        "parentMappingStatus": "unverified",
+        "note": "BMU is a separate Kenya geographic frame; no implicit BMU-to-district/GAUL-2 mapping is permitted."
+      },
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "stage32_source_grain_approved"
+      },
+      "derivationStatus": "upstream_unverified_source_grain_only",
+      "dimensions": {
+        "bmu": {
+          "field": "BMU",
+          "aliases": [
+            "bmu",
+            "beach management unit",
+            "management unit"
+          ]
+        },
+        "month": {
+          "field": "date",
+          "aliases": [
+            "month",
+            "date",
+            "period"
+          ]
+        },
+        "gear": {
+          "field": "gear",
+          "aliases": [
+            "gear",
+            "fishing gear",
+            "gear type"
+          ]
+        }
+      },
+      "measures": {
+        "mean_effort": {
+          "label": "Mean effort",
+          "aliases": [
+            "mean effort",
+            "effort",
+            "fishing effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source effort units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_cpue": {
+          "label": "Mean CPUE",
+          "aliases": [
+            "mean cpue",
+            "cpue",
+            "catch rate",
+            "catch per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUE units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_cpua": {
+          "label": "Mean CPUA",
+          "aliases": [
+            "mean cpua",
+            "cpua",
+            "catch per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source CPUA units",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_rpue": {
+          "label": "Mean RPUE",
+          "aliases": [
+            "mean rpue",
+            "rpue",
+            "revenue rate",
+            "revenue per unit effort"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUE units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        },
+        "mean_rpua": {
+          "label": "Mean RPUA",
+          "aliases": [
+            "mean rpua",
+            "rpua",
+            "revenue per unit area"
+          ],
+          "kind": "rate",
+          "unit": {
+            "value": "source RPUA units ({currency})",
+            "status": "stage31b_field_confirmed_unit_unverified"
+          },
+          "nativeGrain": [
+            "bmu",
+            "month",
+            "gear"
+          ],
+          "derivationStatus": "upstream_unverified_source_grain_only",
+          "rollups": {
+            "acrossBmu": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 did not verify weights/denominators for reducing this stored mean/rate across BMUs."
+            },
+            "acrossTime": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact monthly source-grain observations only; one-number reductions across months remain blocked."
+            },
+            "sum": {
+              "status": "forbidden",
+              "note": "Stored mean/rate values must never be summed."
+            },
+            "acrossGear": {
+              "status": "forbidden_source_grain_only",
+              "note": "Stage 3.2 approved exact BMU × month × gear observations only; reducing stored means/rates across gear is not verified."
+            }
+          }
+        }
+      },
+      "bindings": {
+        "KE": {
+          "database": "app",
+          "collection": "gear_summaries",
+          "status": "available",
+          "observedDocuments": 12321
+        }
+      },
+      "queryPolicy": {
+        "maxRows": 15000,
+        "timeFilterStatus": "supported",
+        "canonicalKey": [
+          "bmu",
+          "month",
+          "gear"
+        ],
+        "duplicateResolution": "verified_unique_source_grain"
+      },
+      "caveats": [
+        "Stage 3.1B verified zero duplicate groups at BMU × month × gear grain.",
+        "Only exact stored monthly gear observations are activated; upstream formulas/weights remain unverified.",
+        "Cross-BMU, cross-time, and cross-gear reductions of stored mean/rate values are forbidden.",
+        "BMU is not district/GAUL-2 and no implicit geographic join is permitted.",
+        "This dataset is unrestricted-only until a future Peskas page explicitly operates in the Kenya BMU frame."
+      ]
+    }
+  },
+  "geographicAlternatives": {
+    "KE": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "If the requested Kenya measure or dashboard scope cannot be served at BMU grain, results use independent district-level summaries. They are NOT estimates for individual BMUs or a BMU-to-district conversion."
+      }
+    ],
+    "TZ": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "BMU-level data are not available for these measures in the Zanzibar catalog. Results are independent district-level summaries, NOT estimates for individual BMUs or a BMU-to-district geographic conversion."
+      }
+    ],
+    "MZ": [
+      {
+        "requestedLevel": "bmu",
+        "replacementLevel": "district",
+        "targetDataset": "monthly_district_summary",
+        "supportedMeasures": [
+          "estimated_catch_tn",
+          "estimated_revenue",
+          "mean_cpue",
+          "mean_rpue",
+          "estimated_fishing_trips",
+          "mean_catch_kg"
+        ],
+        "reason": "BMU-level data are not available for these measures in the Mozambique catalog. Results are independent district-level summaries, NOT estimates for individual BMUs or a BMU-to-district geographic conversion."
+      }
+    ]
+  }
+}

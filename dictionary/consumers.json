@@ -1,0 +1,9 @@
+{
+  "about": "Which generated files each Peskas repo gets, and where. Keys are the repos' folder names next to peskas-context; each pair is [file in dictionary/, path in that repo]. sync.py copies them; sync.py --check reports any that differ.",
+  "repos": {
+    "peskas.dashboard": {
+      "files": [["semantic-catalog.json", "packages/api/src/askfish/semantic-catalog.json"]],
+      "after": "AskFish reads the new catalog once the dashboard deploys; run the dashboard's tests (pnpm --filter @repo/api test) first."
+    }
+  }
+}
