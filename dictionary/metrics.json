@@ -1,0 +1,228 @@
+{
+  "about": "What each measure in portal.odcs.json means and how its values combine. metrics are the district and monthly summaries' (and, under their gear name, the gear summaries'); taxaMetrics are the taxa summaries'. A total adds up; an average combines weighted by what `weight` names (its measure, read from the collection `from` gives at the same district, month and other keys), districts first and then months, and falls back to the plain mean where no value has a positive weight; a share combines as a plain mean.",
+  "weights": {
+    "landings": {
+      "description": "the landings behind each value",
+      "measure": "n_submissions",
+      "from": { "monthly_summaries": "districts_summaries", "districts_summaries": "districts_summaries", "gear_summaries": "gear_summaries" }
+    },
+    "catch": {
+      "description": "the recorded catch behind each value",
+      "measure": "catch_kg",
+      "from": { "taxa_summaries": "taxa_summaries" }
+    }
+  },
+  "methods": {
+    "gps_tracker": {
+      "label": "GPS tracker",
+      "description": "Census boats × trips per GPS-tracked boat × catch per surveyed trip, per district and month. Catch per trip is averaged by boat and gear group, each counting for its share of the census boats (coasts 4.20.0), so it is not the plain mean_catch_kg. A district-month needs tracked trips and surveyed landings. Its confidence comes from sampling_rate: high from 0.3, medium from 0.1, low below; below 0.1 the dashboard shows no change on a year earlier."
+    },
+    "fao_artfish": {
+      "label": "FAO ARTFISH",
+      "description": "FAO's OPEN ARTFISH method (de Graaf, Stamatopoulos & Jarrett 2017): census boats × days a boat fishes in the month, from the surveyed fishers' days fished last week × catch per surveyed trip, by boat group and gear group (boat type alone in Mozambique), then added up. Uses only the KEFS (Kenya), WF (Zanzibar) and DINAPA (Mozambique) trips. Since coasts 4.19.0. Its precision is in the API only, so the dashboard never shows the change of an ARTFISH figure on a year earlier."
+    }
+  },
+  "metrics": {
+    "mean_cpue": {
+      "label": "Catch per unit effort",
+      "synonyms": ["cpue", "catch rate", "catch per unit effort", "fishing productivity"],
+      "description": "Each surveyed trip's catch divided by its fishers and its hours, averaged over the district-month's trips.",
+      "unit": "kg/fisher/hour",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded",
+      "gear": "cpue",
+      "caveats": ["A falling rate can mean fewer fish, but also bad weather or a change of gear or fishing ground: read it as a warning sign, not a measure of the stock."]
+    },
+    "mean_rpue": {
+      "label": "Revenue per unit effort",
+      "synonyms": ["rpue", "revenue per unit effort", "revenue rate", "fisher revenue rate"],
+      "description": "Each surveyed trip's catch value divided by its fishers and its hours, averaged over the district-month's trips.",
+      "unit": "{currency}/fisher/hour",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded",
+      "gear": "rpue",
+      "caveats": ["Values are what fishers report at landing, not adjusted for inflation."]
+    },
+    "mean_catch_kg": {
+      "label": "Catch per trip",
+      "synonyms": ["catch per trip", "mean catch", "average catch"],
+      "description": "Mean total catch of a surveyed trip.",
+      "unit": "kg",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded",
+      "caveats": ["Depends on which boats and gears are surveyed: where larger boats are surveyed more often, the catch per trip is larger."]
+    },
+    "mean_catch_price": {
+      "label": "Revenue per trip",
+      "synonyms": ["revenue per trip", "mean catch value", "average catch value", "mean catch price"],
+      "description": "Mean value of a surveyed trip's catch.",
+      "unit": "{currency}",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded",
+      "caveats": ["Covers the whole crew's catch, before fuel, gear or other costs."]
+    },
+    "n_fishers": {
+      "label": "Fishers per trip",
+      "synonyms": ["crew size", "fishers per trip", "crew"],
+      "description": "Crew size: the mean number of fishers on a surveyed trip. Not the number of fishers in a district.",
+      "unit": "fishers",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded"
+    },
+    "n_submissions": {
+      "label": "Landings surveyed",
+      "synonyms": ["landings surveyed", "submissions", "surveyed trips", "records"],
+      "description": "Landings recorded by enumerators and kept after validation.",
+      "unit": "landings",
+      "kind": "total",
+      "figure": "recorded",
+      "gear": "n_submissions",
+      "caveats": ["Counts the sample, not all fishing trips: enumerators do not record every landing."]
+    },
+    "trip_duration_hrs": {
+      "label": "Trip duration",
+      "synonyms": ["trip duration", "trip hours", "fishing duration"],
+      "description": "Mean length of a surveyed trip, as reported at landing.",
+      "unit": "hours",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded"
+    },
+    "mean_price_kg": {
+      "label": "Price per kg",
+      "synonyms": ["price per kg", "price", "fish price"],
+      "description": "Each surveyed trip's catch value divided by its weight, averaged over the trips; all species mixed.",
+      "unit": "{currency}/kg",
+      "kind": "average",
+      "weight": "landings",
+      "figure": "recorded",
+      "caveats": ["All species are mixed, so a change in what is landed moves the price as much as a change in the market."]
+    },
+    "sampling_rate": {
+      "label": "Share of boats tracked",
+      "synonyms": ["sampling rate", "share of boats tracked", "tracker coverage"],
+      "description": "Share of the district's census boats that carried a GPS tracker that month: the confidence of the GPS tracker estimates (high from 0.3, medium from 0.1, low below).",
+      "unit": "share",
+      "kind": "share",
+      "figure": "recorded",
+      "since": "coasts 4.15.0",
+      "caveats": ["Combined, it is the plain mean of the district-months' shares, not the tracked share of the combined fleet."]
+    },
+    "estimated_fishing_trips": {
+      "label": "Estimated fishing trips",
+      "synonyms": ["estimated fishing trips", "fishing trips", "estimated trips", "trip effort"],
+      "description": "Trips made by all the district's boats: census boats × trips per GPS-tracked boat.",
+      "unit": "trips",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "gps_tracker",
+      "twin": "estimated_fishing_trips_fao",
+      "caveats": ["Assumes tracked boats fish as often as the rest of the fleet."]
+    },
+    "estimated_catch_tn": {
+      "label": "Estimated catch",
+      "synonyms": ["estimated catch", "total catch", "landings", "catch tonnes"],
+      "description": "Catch landed by all the district's boats: estimated trips × catch per surveyed trip.",
+      "unit": "tonnes",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "gps_tracker",
+      "twin": "estimated_catch_tn_fao",
+      "caveats": ["An estimate on two samples, surveyed landings and tracked boats: trust the order of magnitude and the trend more than the exact figure."]
+    },
+    "estimated_revenue": {
+      "label": "Estimated revenue",
+      "synonyms": ["estimated revenue", "revenue", "earnings", "income"],
+      "description": "Value of the catch landed by all the district's boats: estimated trips × value of a surveyed trip.",
+      "unit": "{currency}",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "gps_tracker",
+      "twin": "estimated_revenue_fao",
+      "caveats": ["Values are those reported at landing, not market or export prices."]
+    },
+    "estimated_fishing_trips_fao": {
+      "label": "Estimated fishing trips",
+      "synonyms": ["ARTFISH fishing trips", "FAO estimated trips", "fishing days"],
+      "description": "Trips made by all the district's boats: for each boat and gear group, census boats × days fished, one trip a day; counted only where the catch is estimated.",
+      "unit": "trips",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "fao_artfish",
+      "twin": "estimated_fishing_trips",
+      "since": "coasts 4.19.0, dashboard 2.3.0",
+      "caveats": ["Rests on fishers' memory of the days they fished."]
+    },
+    "estimated_catch_tn_fao": {
+      "label": "Estimated catch",
+      "synonyms": ["ARTFISH catch", "FAO estimated catch", "ARTFISH estimated catch"],
+      "description": "Catch landed by all the district's boats: for each boat and gear group, census boats × days fished × catch per surveyed trip, added up.",
+      "unit": "tonnes",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "fao_artfish",
+      "twin": "estimated_catch_tn",
+      "since": "coasts 4.19.0, dashboard 2.3.0",
+      "caveats": ["Counts only the boat and gear groups surveyed that month."]
+    },
+    "estimated_revenue_fao": {
+      "label": "Estimated revenue",
+      "synonyms": ["ARTFISH revenue", "FAO estimated revenue", "ARTFISH estimated revenue"],
+      "description": "Value of that catch: for each boat and gear group, census boats × days fished × value of a surveyed trip, added up.",
+      "unit": "{currency}",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "fao_artfish",
+      "twin": "estimated_revenue",
+      "since": "coasts 4.19.0, dashboard 2.3.0",
+      "caveats": ["Values are those reported at landing, not market or export prices."]
+    }
+  },
+  "taxaMetrics": {
+    "catch_kg": {
+      "label": "Recorded catch",
+      "synonyms": ["recorded catch", "species catch", "catch composition", "catch kg"],
+      "description": "Catch of the taxon at the surveyed landings.",
+      "unit": "kg",
+      "kind": "total",
+      "figure": "recorded",
+      "caveats": ["The catch of the surveyed landings only; in Kenya the identified sample of each catch."]
+    },
+    "mean_length": {
+      "label": "Mean length",
+      "synonyms": ["mean length", "average fish length", "fish length", "size"],
+      "description": "Mean length of the taxon's measured fish, weighted by catch, in the district-month.",
+      "unit": "cm",
+      "kind": "average",
+      "weight": "catch",
+      "figure": "recorded",
+      "caveats": ["Lengths of different taxa do not combine.", "In Kenya, the mean of the fish measured on each landing."]
+    },
+    "price_kg": {
+      "label": "Species price per kg",
+      "synonyms": ["species price", "taxon price", "price per kg of a species"],
+      "description": "Value of the taxon's priced catch divided by its weight. Kenya prices each species; Zanzibar and Mozambique record one value per trip, so a species is priced only from trips that landed it alone (coasts 4.15.0).",
+      "unit": "{currency}/kg",
+      "kind": "average",
+      "weight": "catch",
+      "figure": "recorded",
+      "caveats": ["Species mostly landed together with others can be missing or rest on few trips."]
+    },
+    "estimated_catch_tn_fao": {
+      "label": "Estimated catch by species",
+      "synonyms": ["estimated catch by species", "ARTFISH catch by species", "species estimate"],
+      "description": "The FAO ARTFISH estimated catch split by taxon: each boat and gear group's estimate in the species mix of the surveyed trips its catch per trip came from.",
+      "unit": "tonnes",
+      "kind": "total",
+      "figure": "estimated",
+      "method": "fao_artfish",
+      "since": "coasts 4.23.0, dashboard 2.4.0",
+      "caveats": ["Has no GPS tracker twin, so it adds up every district-month ARTFISH estimates: its total can exceed the ARTFISH catch the dashboard compares with the GPS tracker method."]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Peskas metrics",
+  "type": "object",
+  "required": ["weights", "methods", "metrics", "taxaMetrics"],
+  "additionalProperties": false,
+  "properties": {
+    "about": { "type": "string" },
+    "weights": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description", "measure", "from"],
+        "additionalProperties": false,
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "measure": { "type": "string", "minLength": 1 },
+          "from": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      }
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label", "description"],
+        "additionalProperties": false,
+        "properties": { "label": { "type": "string" }, "description": { "type": "string" } }
+      }
+    },
+    "metrics": { "$ref": "#/$defs/metrics" },
+    "taxaMetrics": { "$ref": "#/$defs/metrics" }
+  },
+  "$defs": {
+    "metrics": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/metric" }
+    },
+    "metric": {
+      "type": "object",
+      "required": ["label", "synonyms", "description", "unit", "kind", "figure"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "synonyms": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "description": { "type": "string", "minLength": 1 },
+        "unit": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["total", "average", "share"] },
+        "weight": { "type": "string" },
+        "figure": { "enum": ["recorded", "estimated"] },
+        "method": { "type": "string" },
+        "twin": { "type": "string" },
+        "gear": { "type": "string" },
+        "since": { "type": "string" },
+        "caveats": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "average" } } }, "then": { "required": ["weight"] }, "else": { "not": { "required": ["weight"] } } },
+        { "if": { "properties": { "figure": { "const": "estimated" } } }, "then": { "required": ["method"] }, "else": { "not": { "required": ["method"] } } }
+      ]
+    }
+  }
+}

@@ -1,0 +1,936 @@
+{
+  "apiVersion": "v3.2.0",
+  "kind": "DataContract",
+  "id": "peskas-portal-summaries",
+  "name": "Peskas portal summaries",
+  "version": "1.0.0",
+  "status": "active",
+  "domain": "small-scale fisheries",
+  "description": {
+    "purpose": "Monthly summaries of small-scale fishing activity per district, written by each country's pipeline for its Peskas dashboard.",
+    "usage": "Written by peskas.coasts export_portal() after summarize_data(), every 2 days in Kenya and Mozambique and every 4 days in Zanzibar. Read by peskas.dashboard and, through the dashboard's /api/askfish routes, by AskFish. The metrics are defined in metrics.json.",
+    "limitations": "Built from validated landings only. Recorded figures describe the surveyed landings, not the whole fleet; estimated figures scale them up to all the boats of a district."
+  },
+  "servers": [
+    {
+      "server": "zanzibar",
+      "type": "custom",
+      "database": "portal-prod",
+      "environment": "prod",
+      "description": "Zanzibar's dashboard (zanzibar.peskas.org). ZAFIRI enumerators survey landings in Unguja and Pemba; catch weight comes from fish number and length (FishBase length-weight) or buckets; one value covers the whole catch, so a species price comes only from trips that landed that species alone. Every measure from 2025-02. The ARTFISH days-fished question has been asked since 2025-08; earlier months use the district's average answer.",
+      "customProperties": [
+        {
+          "property": "countryCode",
+          "value": "TZ"
+        },
+        {
+          "property": "countryName",
+          "value": "Zanzibar"
+        },
+        {
+          "property": "iso3",
+          "value": "TZA"
+        },
+        {
+          "property": "currency",
+          "value": "TZS"
+        }
+      ]
+    },
+    {
+      "server": "kenya",
+      "type": "custom",
+      "database": "portal-prod",
+      "environment": "prod",
+      "description": "Kenya's dashboard (kenya.peskas.org). The KEFS catch assessment survey weighs the whole catch and identifies, weighs and prices a sample: catch by species is that sample, prices are per species, and mean_length is the mean of the fish measured on a landing. Recorded figures from 2024-01, FAO ARTFISH estimates from 2024-08, GPS tracker estimates and sampling_rate from 2025-03.",
+      "customProperties": [
+        {
+          "property": "countryCode",
+          "value": "KE"
+        },
+        {
+          "property": "countryName",
+          "value": "Kenya"
+        },
+        {
+          "property": "iso3",
+          "value": "KEN"
+        },
+        {
+          "property": "currency",
+          "value": "KES"
+        }
+      ]
+    },
+    {
+      "server": "mozambique",
+      "type": "custom",
+      "database": "portal-prod",
+      "environment": "prod",
+      "description": "Mozambique's dashboard (mozambique.peskas.org). The DINAPA landing survey; weight and price as in Zanzibar. FAO ARTFISH groups boats by boat type alone. Every measure from 2025-10.",
+      "customProperties": [
+        {
+          "property": "countryCode",
+          "value": "MZ"
+        },
+        {
+          "property": "countryName",
+          "value": "Mozambique"
+        },
+        {
+          "property": "iso3",
+          "value": "MOZ"
+        },
+        {
+          "property": "currency",
+          "value": "MZN"
+        }
+      ]
+    }
+  ],
+  "schema": [
+    {
+      "name": "monthly_summaries",
+      "physicalName": "monthly_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Every district-month metric except the counts, crew size and trip duration, which only districts_summaries carries. Its mean_* values are the same as in districts_summaries.",
+      "dataGranularityDescription": "One row per district, month and metric.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "metric",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "required": true,
+          "description": "The metric's key in metrics.json.",
+          "enum": [
+            {
+              "value": "mean_catch_kg"
+            },
+            {
+              "value": "mean_catch_price"
+            },
+            {
+              "value": "mean_cpue"
+            },
+            {
+              "value": "mean_rpue"
+            },
+            {
+              "value": "mean_price_kg"
+            },
+            {
+              "value": "estimated_fishing_trips"
+            },
+            {
+              "value": "estimated_catch_tn"
+            },
+            {
+              "value": "estimated_revenue"
+            },
+            {
+              "value": "sampling_rate"
+            },
+            {
+              "value": "estimated_fishing_trips_fao"
+            },
+            {
+              "value": "estimated_catch_tn_fao"
+            },
+            {
+              "value": "estimated_revenue_fao"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "logicalType": "number",
+          "description": "The measure's value; can be null."
+        }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "Carries no landing counts: the landings that weight an average come from districts_summaries (n_submissions of the same district and month)."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "districts_summaries",
+      "physicalName": "districts_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Every district-month metric, with the landings surveyed, crew size and trip duration.",
+      "dataGranularityDescription": "One row per district, month and indicator.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "indicator",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "required": true,
+          "description": "The metric's key in metrics.json.",
+          "enum": [
+            {
+              "value": "n_submissions"
+            },
+            {
+              "value": "n_fishers"
+            },
+            {
+              "value": "trip_duration_hrs"
+            },
+            {
+              "value": "mean_catch_kg"
+            },
+            {
+              "value": "mean_catch_price"
+            },
+            {
+              "value": "mean_cpue"
+            },
+            {
+              "value": "mean_rpue"
+            },
+            {
+              "value": "mean_price_kg"
+            },
+            {
+              "value": "estimated_fishing_trips"
+            },
+            {
+              "value": "estimated_catch_tn"
+            },
+            {
+              "value": "estimated_revenue"
+            },
+            {
+              "value": "sampling_rate"
+            },
+            {
+              "value": "estimated_fishing_trips_fao"
+            },
+            {
+              "value": "estimated_catch_tn_fao"
+            },
+            {
+              "value": "estimated_revenue_fao"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "logicalType": "number",
+          "description": "The measure's value; can be null."
+        }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "A district-month with no landings has no row or a null value: it is a gap in data collection, not zero fishing."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gear_summaries",
+      "physicalName": "gear_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Landings and catch and revenue rates per gear.",
+      "dataGranularityDescription": "One row per district, month, gear and indicator.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "gear",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "businessName": "gear",
+          "description": "Fishing gear as the survey names it; missing for trips recorded without one.",
+          "synonyms": [
+            {
+              "synonym": "gear"
+            },
+            {
+              "synonym": "fishing gear"
+            },
+            {
+              "synonym": "gear type"
+            }
+          ]
+        },
+        {
+          "name": "indicator",
+          "primaryKey": true,
+          "primaryKeyPosition": 4,
+          "logicalType": "string",
+          "required": true,
+          "description": "n_submissions, or the gear name of a metric in metrics.json (cpue for mean_cpue, rpue for mean_rpue).",
+          "enum": [
+            {
+              "value": "n_submissions"
+            },
+            {
+              "value": "cpue"
+            },
+            {
+              "value": "rpue"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "logicalType": "number",
+          "description": "The measure's value; can be null."
+        }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "Describes the surveyed landings: enumerators may visit some landing sites, and so some gears, more often than others."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "taxa_summaries",
+      "physicalName": "taxa_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Recorded catch, length and price per taxon, and the FAO ARTFISH estimate of each taxon's catch by all boats.",
+      "dataGranularityDescription": "One row per district, month, taxon and metric.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "catch_taxon",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "taxon",
+          "description": "Taxon: the scientific name of a species, genus or family; empty for unidentified catch. taxa_traits links it to its ASFIS code.",
+          "synonyms": [
+            {
+              "synonym": "species"
+            },
+            {
+              "synonym": "taxon"
+            },
+            {
+              "synonym": "fish"
+            },
+            {
+              "synonym": "species group"
+            }
+          ]
+        },
+        {
+          "name": "metric",
+          "primaryKey": true,
+          "primaryKeyPosition": 4,
+          "logicalType": "string",
+          "required": true,
+          "description": "The metric's key under taxaMetrics in metrics.json.",
+          "enum": [
+            {
+              "value": "catch_kg"
+            },
+            {
+              "value": "mean_length"
+            },
+            {
+              "value": "price_kg"
+            },
+            {
+              "value": "estimated_catch_tn_fao"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "logicalType": "number",
+          "description": "The measure's value; can be null."
+        }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "Recorded catch by taxon is the catch of the surveyed landings only, a small part of the total; in Kenya it is the identified sample of each catch.",
+            "Some taxa are recorded at family or genus level."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gear_taxa_summaries",
+      "physicalName": "gear_taxa_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Recorded catch per gear and taxon: what each gear lands. Since coasts 4.15.0.",
+      "dataGranularityDescription": "One row per district, month, gear and taxon; only rows with catch.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "gear",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "businessName": "gear",
+          "description": "Fishing gear as the survey names it; missing for trips recorded without one.",
+          "synonyms": [
+            {
+              "synonym": "gear"
+            },
+            {
+              "synonym": "fishing gear"
+            },
+            {
+              "synonym": "gear type"
+            }
+          ]
+        },
+        {
+          "name": "catch_taxon",
+          "primaryKey": true,
+          "primaryKeyPosition": 4,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "taxon",
+          "description": "Taxon: the scientific name of a species, genus or family; empty for unidentified catch. taxa_traits links it to its ASFIS code.",
+          "synonyms": [
+            {
+              "synonym": "species"
+            },
+            {
+              "synonym": "taxon"
+            },
+            {
+              "synonym": "fish"
+            },
+            {
+              "synonym": "species group"
+            }
+          ]
+        },
+        {
+          "name": "catch_kg",
+          "logicalType": "number",
+          "required": true,
+          "description": "Recorded catch of the taxon by the gear at surveyed landings. Adds up.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "kg"
+            }
+          ]
+        },
+        {
+          "name": "n_trips",
+          "logicalType": "integer",
+          "required": true,
+          "description": "Surveyed trips with the gear that landed the taxon. A trip that landed several taxa counts in each, so trips do not add up across taxa.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "trips"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "length_summaries",
+      "physicalName": "length_summaries",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "Recorded catch per length class, for the size views. Since coasts 4.15.0. Classes: under 10 cm, 5 cm wide to 30 cm, 10 cm wide to 1 m, then 100-125, 125-150, 150-200 and 200 cm or more.",
+      "dataGranularityDescription": "One row per district, month, taxon, gear and length class; only measured catch.",
+      "properties": [
+        {
+          "name": "gaul_2_name",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "district",
+          "description": "District: the official GAUL level 2 name. Districts are matched by name, never by code.",
+          "synonyms": [
+            {
+              "synonym": "district"
+            },
+            {
+              "synonym": "county"
+            },
+            {
+              "synonym": "area"
+            }
+          ]
+        },
+        {
+          "name": "date",
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "logicalType": "date",
+          "required": true,
+          "businessName": "month",
+          "description": "The month, as its first day at midnight UTC. The current month is in the data while its landings come in; views stop at the last complete month.",
+          "synonyms": [
+            {
+              "synonym": "month"
+            },
+            {
+              "synonym": "date"
+            },
+            {
+              "synonym": "period"
+            }
+          ]
+        },
+        {
+          "name": "catch_taxon",
+          "primaryKey": true,
+          "primaryKeyPosition": 3,
+          "logicalType": "string",
+          "required": true,
+          "businessName": "taxon",
+          "description": "Taxon: the scientific name of a species, genus or family; empty for unidentified catch. taxa_traits links it to its ASFIS code.",
+          "synonyms": [
+            {
+              "synonym": "species"
+            },
+            {
+              "synonym": "taxon"
+            },
+            {
+              "synonym": "fish"
+            },
+            {
+              "synonym": "species group"
+            }
+          ]
+        },
+        {
+          "name": "gear",
+          "primaryKey": true,
+          "primaryKeyPosition": 4,
+          "logicalType": "string",
+          "businessName": "gear",
+          "description": "Fishing gear as the survey names it; missing for trips recorded without one.",
+          "synonyms": [
+            {
+              "synonym": "gear"
+            },
+            {
+              "synonym": "fishing gear"
+            },
+            {
+              "synonym": "gear type"
+            }
+          ]
+        },
+        {
+          "name": "length_min",
+          "primaryKey": true,
+          "primaryKeyPosition": 5,
+          "logicalType": "number",
+          "required": true,
+          "description": "Lower edge of the length class, included.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "cm"
+            }
+          ]
+        },
+        {
+          "name": "length_max",
+          "logicalType": "number",
+          "description": "Upper edge of the length class, excluded; missing for the open top class.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "cm"
+            }
+          ]
+        },
+        {
+          "name": "n_trips",
+          "logicalType": "integer",
+          "required": true,
+          "description": "Trips measured behind the taxon, gear, district and month, repeated on each of its length classes: count it once per taxon, gear, district and month.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "trips"
+            }
+          ]
+        },
+        {
+          "name": "catch_kg",
+          "logicalType": "number",
+          "required": true,
+          "description": "Recorded catch in the length class. Adds up.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "kg"
+            }
+          ]
+        }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "In Kenya a catch row carries the mean length of the fish measured on that landing, so classes hold landings' averages and understate the smallest and largest fish.",
+            "Size views use only species measured on at least 10 landings; shares below maturity are ranges, because a class can straddle the length at maturity."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "taxa_traits",
+      "physicalName": "taxa_traits",
+      "physicalType": "collection",
+      "logicalType": "object",
+      "description": "FishBase and SeaLifeBase traits of each taxon the country has landed, among the species recorded in FAO areas 51 and 57. A code spanning several species takes their median and range; the species-level fields are set only for a one-species code. Every trait is missing when FishBase had nothing. Since coasts 4.15.0.",
+      "dataGranularityDescription": "One row per taxon, for the whole country and all months.",
+      "properties": [
+        {
+          "name": "alpha3_code",
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "logicalType": "string",
+          "required": true,
+          "description": "FAO ASFIS 3-alpha code of the taxon.",
+          "authoritativeDefinitions": [
+            {
+              "type": "canonicalUrl",
+              "url": "https://www.fao.org/fishery/en/collection/asfis"
+            }
+          ]
+        },
+        {
+          "name": "catch_taxon",
+          "logicalType": "string",
+          "required": true,
+          "businessName": "taxon",
+          "description": "Taxon: the scientific name of a species, genus or family; empty for unidentified catch. taxa_traits links it to its ASFIS code.",
+          "synonyms": [
+            {
+              "synonym": "species"
+            },
+            {
+              "synonym": "taxon"
+            },
+            {
+              "synonym": "fish"
+            },
+            {
+              "synonym": "species group"
+            }
+          ]
+        },
+        {
+          "name": "english_name",
+          "logicalType": "string",
+          "description": "Common name from ASFIS."
+        },
+        {
+          "name": "n_species",
+          "logicalType": "integer",
+          "description": "Species the code spans."
+        },
+        {
+          "name": "vulnerability",
+          "logicalType": "number",
+          "description": "FishBase intrinsic vulnerability to fishing, 0 to 100 (median over the code's species). The dashboard groups it in quarters: low, moderate, high, very high.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "score 0-100"
+            }
+          ]
+        },
+        {
+          "name": "vulnerability_min",
+          "logicalType": "number",
+          "description": "Lowest vulnerability among the code's species."
+        },
+        {
+          "name": "vulnerability_max",
+          "logicalType": "number",
+          "description": "Highest vulnerability among the code's species."
+        },
+        {
+          "name": "trophic_level",
+          "logicalType": "number",
+          "description": "Median FishBase trophic level: about 2 for plant eaters, 3 to 4.5 for predators."
+        },
+        {
+          "name": "n_threatened",
+          "logicalType": "integer",
+          "description": "Species of the code that are IUCN Vulnerable, Endangered or Critically Endangered."
+        },
+        {
+          "name": "n_cites",
+          "logicalType": "integer",
+          "description": "Species of the code listed by CITES."
+        },
+        {
+          "name": "iucn_code",
+          "logicalType": "string",
+          "description": "IUCN Red List category, for a one-species code only. Global and can be years old."
+        },
+        {
+          "name": "length_maturity_cm",
+          "logicalType": "number",
+          "description": "Total length at which the species first reproduces, for a one-species code only.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "cm"
+            }
+          ]
+        },
+        {
+          "name": "length_optimum_cm",
+          "logicalType": "number",
+          "description": "Total length at which a year-class reaches its greatest total weight, for a one-species code only; kept only when at or above the length at maturity.",
+          "customProperties": [
+            {
+              "property": "unit",
+              "value": "cm"
+            }
+          ]
+        },
+        {
+          "name": "class",
+          "logicalType": "string",
+          "description": "Taxonomic class; Elasmobranchii are sharks and rays."
+        }
+      ]
+    }
+  ],
+  "customProperties": [
+    {
+      "property": "checkedOnProd",
+      "value": "2026-10-28"
+    },
+    {
+      "property": "caveats",
+      "value": [
+        "Missing district-months are absent observations, not zero: a zero would claim the month was surveyed.",
+        "Every view stops at the last complete month: the current month is left out while its landings come in.",
+        "Figures resting on fewer than 10 landings are thin and can swing widely from one month to the next.",
+        "Recorded figures describe the surveyed landings, not the whole fleet.",
+        "Estimated figures exist only for district-months with at least 10 surveyed trips, and leave out fishing without boats, such as gleaning on foot.",
+        "Values are as reported at the landing site, not adjusted for inflation."
+      ]
+    }
+  ]
+}
