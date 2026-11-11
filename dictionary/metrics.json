@@ -201,7 +201,7 @@
       "kind": "average",
       "weight": "catch",
       "figure": "recorded",
-      "caveats": ["Lengths of different taxa do not combine.", "In Kenya, the mean of the fish measured on each landing."]
+      "caveats": ["Lengths of different taxa do not combine."]
     },
     "price_kg": {
       "label": "Species price per kg",

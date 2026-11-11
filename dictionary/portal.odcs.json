@@ -42,7 +42,7 @@
       "type": "custom",
       "database": "portal-prod",
       "environment": "prod",
-      "description": "Kenya's dashboard (kenya.peskas.org). The KEFS catch assessment survey weighs the whole catch and identifies, weighs and prices a sample: catch by species is that sample, prices are per species, and mean_length is the mean of the fish measured on a landing. Recorded figures from 2024-01, FAO ARTFISH estimates from 2024-08, GPS tracker estimates and sampling_rate from 2025-03.",
+      "description": "Kenya's dashboard (kenya.peskas.org). The KEFS catch assessment survey weighs the whole catch and identifies, weighs and prices a sample: catch by species is that sample, and prices are per species. Recorded figures from 2024-01, FAO ARTFISH estimates from 2024-08, GPS tracker estimates and sampling_rate from 2025-03.",
       "customProperties": [
         {
           "property": "countryCode",
@@ -786,7 +786,6 @@
         {
           "property": "caveats",
           "value": [
-            "In Kenya a catch row carries the mean length of the fish measured on that landing, so classes hold landings' averages and understate the smallest and largest fish.",
             "Size views use only species measured on at least 10 landings; shares below maturity are ranges, because a class can straddle the length at maturity."
           ]
         }
