@@ -16,6 +16,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / "semantic-catalog.json"
 ACROSS = {"month": "acrossTime", "district": "acrossDistrict", "gear": "acrossGear", "taxon": "acrossTaxon"}
 COUNTS = {"landings", "trips"}
+TAXA_COLLECTIONS = {"taxa_summaries", "gear_taxa_summaries"}
 
 
 def load(name):
@@ -80,34 +81,37 @@ def dataset(collection, spec, contract, dictionary, ids):
     measured = discriminator(collection)
     keys = sorted((p for p in collection["properties"] if p.get("primaryKey")), key=lambda p: p["primaryKeyPosition"])
     grain = [dimension_id(p) for p in keys]
-    dims = [d for d in grain if d != measured["name"]]
-    group = dictionary["taxaMetrics" if collection["name"] == "taxa_summaries" else "metrics"]
+    dims = [d for d in grain if not measured or d != measured["name"]]
+    group = dictionary["taxaMetrics" if collection["name"] in TAXA_COLLECTIONS else "metrics"]
     dimensions = {
         dimension_id(p): {"field": p["name"], "aliases": [s["synonym"] for s in p["synonyms"]]} for p in keys if p is not measured
     }
-    dimensions[measured["name"]] = {"field": measured["name"], "aliases": ["metric", "measure", "indicator"]}
+    if measured:
+        dimensions[measured["name"]] = {"field": measured["name"], "aliases": ["metric", "measure", "indicator"]}
+    # A long collection names its measures in the discriminator; a wide one lists those AskFish reads.
+    names = [e["value"] for e in measured["enum"]] if measured else spec["measures"]
 
     def weighted_by(weight):
         w = dictionary["weights"][weight]
         source = ids[w["from"][collection["name"]]]
         keys = ", ".join(dims[:-1]) + " and " + dims[-1]
-        return f"Weighted by {w['description']}: {w['measure']} of {source} at the same {keys}."
+        return f"Weighted by {w['description']}: {w['measure']} of {source} at the same {keys}." + (
+            f" {w['caveat']}" if "caveat" in w else ""
+        )
 
     return {
         "queryable": True,
         "lineage": "district",
         "collection": collection["physicalName"],
         "grain": grain,
-        "layout": "long",
+        "layout": "long" if measured else "wide",
         "timeField": "date",
         "geographyKey": "gaul_2_name",
         "pageScopes": spec["pageScopes"],
         "access": spec["access"],
         "derivationStatus": "described_by_peskas_data_dictionary",
         "dimensions": dimensions,
-        "measures": {
-            e["value"]: measure(metric_for(group, e["value"])[1], dims, dictionary, weighted_by) for e in measured["enum"]
-        },
+        "measures": {name: measure(metric_for(group, name)[1], dims, dictionary, weighted_by) for name in names},
         "bindings": {
             custom(s, "countryCode"): {
                 "database": s["database"],
@@ -162,6 +166,7 @@ def build():
         "datasets": {**datasets, **askfish["extraDatasets"]},
         "discoveredSources": [],
         "geographicAlternatives": askfish["geographicAlternatives"],
+        "analysisCapabilities": askfish["analysisCapabilities"],
     }
 
 

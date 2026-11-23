@@ -640,6 +640,15 @@
             }
           ]
         }
+      ],
+      "customProperties": [
+        {
+          "property": "caveats",
+          "value": [
+            "Recorded catch by gear and taxon is the catch of the surveyed landings only, a small part of the total; in Kenya it is the identified sample of each catch.",
+            "Trips (n_trips) do not add up across taxa: a trip that landed several taxa counts in each."
+          ]
+        }
       ]
     },
     {

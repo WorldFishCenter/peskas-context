@@ -1,6 +1,6 @@
 {
-  "about": "What AskFish's catalog needs beyond the dictionary: which portal collections it may query and under which dataset id, its pages and scope modes, row limits, and Hamza's own rules (BMU substitutions, the two Kenya BMU datasets from the BMU dashboard's app database), copied as they were in catalog 0.6.0. build.py turns this, portal.odcs.json and metrics.json into semantic-catalog.json.",
-  "catalogVersion": "0.7.0",
+  "about": "What AskFish's catalog needs beyond the dictionary: which portal collections it may query and under which dataset id (a collection with one column per measure lists the measures AskFish reads), its pages and scope modes, row limits, the analyses it may run on the figures the dashboard returns (analysisCapabilities), and Hamza's own rules (BMU substitutions, the two Kenya BMU datasets from the BMU dashboard's app database), copied as they were in catalog 0.6.0. build.py turns this, portal.odcs.json and metrics.json into semantic-catalog.json.",
+  "catalogVersion": "0.8.0",
   "scopeModes": {
     "restricted": {
       "pageDatasetsHard": true,
@@ -123,6 +123,19 @@
         "catch_composition"
       ],
       "maxRows": 25000,
+      "access": {
+        "applicationRoute": "public",
+        "dataClassification": "aggregate_non_personal",
+        "classificationStatus": "provisional"
+      }
+    },
+    "gear_taxa_summaries": {
+      "collection": "gear_taxa_summaries",
+      "measures": [
+        "catch_kg"
+      ],
+      "pageScopes": [],
+      "maxRows": 20000,
       "access": {
         "applicationRoute": "public",
         "dataClassification": "aggregate_non_personal",
@@ -678,5 +691,25 @@
         "reason": "BMU-level data are not available for these measures in the Mozambique catalog. Results are independent district-level summaries, NOT estimates for individual BMUs or a BMU-to-district geographic conversion."
       }
     ]
+  },
+  "analysisCapabilities": {
+    "recorded_catch_composition_v1": {
+      "operation": "composition",
+      "dataset": "gear_taxa_summaries",
+      "measure": "catch_kg",
+      "groupBy": "taxon",
+      "partitionBy": "gear",
+      "allowedPartitionDimensions": [
+        "gear",
+        "district",
+        "month"
+      ],
+      "maxPartitionDimensions": 2,
+      "maxPartitions": 96,
+      "positiveOnly": true,
+      "maxTopN": 20,
+      "denominator": "sum_all_matching_positive_values_per_partition_before_top_n",
+      "note": "Each taxon's share of the recorded catch within a gear, district or month (or two of them), out of all the taxa in that group before the top ones are kept. Recorded catch at surveyed landings, not the catch of all boats."
+    }
   }
 }

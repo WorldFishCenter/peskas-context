@@ -3,6 +3,7 @@
   "weights": {
     "landings": {
       "description": "the landings behind each value",
+      "caveat": "Landings count every surveyed trip, while an average may leave out the trips missing its value, so the combined figure is close to, not exactly, the average over all trips.",
       "measure": "n_submissions",
       "from": { "monthly_summaries": "districts_summaries", "districts_summaries": "districts_summaries", "gear_summaries": "gear_summaries" }
     },
@@ -47,7 +48,7 @@
     },
     "mean_catch_kg": {
       "label": "Catch per trip",
-      "synonyms": ["catch per trip", "mean catch", "average catch"],
+      "synonyms": ["catch per trip", "mean catch", "average catch", "average catch per trip", "recorded catch per trip"],
       "description": "Mean total catch of a surveyed trip.",
       "unit": "kg",
       "kind": "average",
