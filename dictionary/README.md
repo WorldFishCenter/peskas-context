@@ -19,7 +19,8 @@ One description of the data the Peskas dashboards publish: what each collection 
 
 - **When coasts changes** what `export_portal()` writes (a collection, column or metric), whoever makes the change updates `portal.odcs.json` and `metrics.json` in the same work, then runs `python build.py`, `python sync.py` and the dashboard's tests.
 - **When the dashboard changes** a metric in `packages/domain/src/metrics.ts` or its English texts, update `metrics.json` to match.
-- **To let AskFish use more**: add a collection to `askfish.json`'s `datasets`. AskFish rejects any field its contract doesn't know, so new kinds of facts need Hamza first.
+- **To let AskFish use more**: add a collection to `askfish.json`'s `datasets` (a collection with one column per measure, such as `gear_taxa_summaries`, lists the `measures` AskFish reads). Analyses AskFish may run on the dashboard's figures, such as the composition of a gear's catch, go in `analysisCapabilities`. AskFish rejects any field its contract doesn't know, so new kinds of facts need Hamza first.
+- **Never edit the dashboard's copy** of `semantic-catalog.json`: the next `sync.py` overwrites it, and the check fails until then. Change the files here.
 
 `build.py` and `sync.py` need only Python. `check.py` needs `jsonschema`, `uv` fetches it.
 
@@ -32,7 +33,7 @@ One description of the data the Peskas dashboards publish: what each collection 
 
 The first two run by themselves every Monday and on each change here, against the dashboard's `dev` (`.github/workflows/dictionary.yaml`). `prod_check.R` runs after every portal export in the Kenya, Zanzibar and Mozambique pipelines, reading this folder from `main`. A failure turns the run red.
 
-The dashboard combines figures, for its pages and for AskFish, with the same code (`packages/api/src/lib/cells.ts`); AskFish asks for them (`aggregateOver`) and doesn't redo the maths. `metrics.json` says how each measure combines, and `check.py` checks the dashboard agrees.
+The dashboard combines figures, for its pages and for AskFish, with the same code (`packages/api/src/lib/cells.ts`); AskFish asks for them (`aggregateOver`) and doesn't redo the maths; it may only turn them into shares, ratios or changes. `metrics.json` says how each measure combines, and `check.py` checks the dashboard agrees.
 
 ## Not covered yet
 

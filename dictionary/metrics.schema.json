@@ -14,6 +14,7 @@
         "additionalProperties": false,
         "properties": {
           "description": { "type": "string", "minLength": 1 },
+          "caveat": { "type": "string", "minLength": 1 },
           "measure": { "type": "string", "minLength": 1 },
           "from": { "type": "object", "additionalProperties": { "type": "string" } }
         }
