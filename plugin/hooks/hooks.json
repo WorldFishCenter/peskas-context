@@ -7,6 +7,7 @@
         "hooks": [
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart \"${CLAUDE_PLUGIN_ROOT}/context/rules.md\"" },
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart \"${CLAUDE_PLUGIN_ROOT}/context/ecosystem.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart \"${CLAUDE_PLUGIN_ROOT}/context/contracts.md\"" },
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SessionStart --r-only \"${CLAUDE_PLUGIN_ROOT}/context/r-pipelines.md\"" }
         ]
       }
@@ -16,6 +17,7 @@
         "hooks": [
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart \"${CLAUDE_PLUGIN_ROOT}/context/rules.md\"" },
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart \"${CLAUDE_PLUGIN_ROOT}/context/ecosystem.md\"" },
+          { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart \"${CLAUDE_PLUGIN_ROOT}/context/contracts.md\"" },
           { "type": "command", "shell": "bash", "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/context.sh\" SubagentStart --r-only \"${CLAUDE_PLUGIN_ROOT}/context/r-pipelines.md\"" }
         ]
       }

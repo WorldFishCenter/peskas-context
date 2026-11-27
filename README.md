@@ -43,7 +43,8 @@ Edit the files below and push to `main`. Everyone with automatic updates gets th
 | File | What it holds |
 |---|---|
 | `plugin/context/rules.md` | The Peskas rules and working style |
-| `plugin/context/ecosystem.md` | Repo map, public names, data flow, cross-repo contracts, terms |
+| `plugin/context/ecosystem.md` | Repo map, public names, data flow, terms |
+| `plugin/context/contracts.md` | Cross-repo contracts: who writes and who reads each shared name |
 | `plugin/context/r-pipelines.md` | Conventions for coasts and the country pipelines (loaded in R repos only) |
 | `plugin/skills/check/SKILL.md` | `/peskas:check` |
 | `plugin/agents/scout.md` | `peskas:scout` |
